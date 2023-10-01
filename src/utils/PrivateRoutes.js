@@ -1,11 +1,14 @@
 import { Outlet, Navigate } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useAuth } from '../context/AuthContext';
 
-export const PrivateRoutes = () => {
-    const { user } = useSelector((state) => state.userReducer);
-  const { token } = user;
+export const PrivateRoutes = ({
+  redirectPath = '/login',
+  children,
+}) => {
+  const {authData} = useAuth();
+  if (!authData) {
+    return <Navigate to={redirectPath} replace />;
+  }
 
-  console.log("token: "+token)
-  
-  return token ? <Outlet/> : <Navigate to="/login"/>
+  return children ? children : <Outlet />;
 };

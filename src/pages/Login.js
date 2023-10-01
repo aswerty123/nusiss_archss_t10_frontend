@@ -1,8 +1,12 @@
-import React, { useState, useEffect, useRef } from 'react'
-import { useDispatch, useSelector } from 'react-redux';
-import { onSignup, onLogin } from '../store/actions';
-import { Outlet, Navigate } from 'react-router-dom';
-import { Link, useNavigate } from 'react-router-dom'
+import React, { useState, useEffect, useRef } from 'react';
+// import { useDispatch, useSelector } from 'react-redux';
+// import { onSignup, onLogin } from '../store/actions';
+// import { Outlet, Navigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import { GetData, PostData, SetAuthToken } from '../utils/';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useSignUpMutation, useLoginMutation } from '../queries/user-queries';
+import { useAuth } from '../context/AuthContext';
 
 /** @jsxImportSource @emotion/react */
 import tw, { styled } from 'twin.macro';
@@ -26,17 +30,8 @@ export const Login = () => {
     phone: '',
   });
   const [isSignup, setSignup] = useState(false);
-
-  const { user, profile } = useSelector((state) => state.userReducer);
-  const dispatch = useDispatch();
-  const navigate = useNavigate()
-
-//   useEffect(() => {
-//     if (user){
-//       navigate('/')
-//     }
-//   })
-
+  const { authData, login, signup } = useAuth();
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     e.preventDefault();
@@ -49,25 +44,28 @@ export const Login = () => {
     console.log(formData);
   };
 
-  const userSubmit = () => {
+  const handleSubmit = (e) => {
+    e.preventDefault();
     console.log('=====>' + formData);
     if (isSignup) {
-      dispatch(
-        onSignup({
-          email: formData.email,
-          password: formData.password,
-          phone: formData.phone,
-        })
-      );
+      signup({
+        email: formData.email,
+        password: formData.password,
+        phone: formData.phone,
+      });
     } else {
-      dispatch(onLogin({ email: formData.email, password: formData.password }));
+      login({
+        email: formData.email,
+        password: formData.password,
+      });
     }
+    navigate('/');
   };
 
   return (
     <div>
       <div>{JSON.stringify(formData)}</div>
-      <div>{JSON.stringify(user)}</div>
+      <div>{JSON.stringify(authData)}</div>
       <LoginFormContainer>
         {isSignup ? (
           <LoginFormHeader>Sign Up with Us</LoginFormHeader>
@@ -75,7 +73,7 @@ export const Login = () => {
           <LoginFormHeader>Log in to your account</LoginFormHeader>
         )}
         <LoginFormBody>
-          <form tw="space-y-6">
+          <form tw="space-y-6" onSubmit={handleSubmit}>
             <div>
               <FieldLabel for="email">Email address</FieldLabel>
 
@@ -119,13 +117,9 @@ export const Login = () => {
             </div>
 
             {isSignup ? (
-              <SubmitButton type="button" onClick={() => userSubmit()}>
-                Sign up
-              </SubmitButton>
+              <SubmitButton type="submit">Sign up</SubmitButton>
             ) : (
-              <SubmitButton type="button" onClick={() => userSubmit()}>
-                Log in
-              </SubmitButton>
+              <SubmitButton type="submit">Log in</SubmitButton>
             )}
           </form>
 
