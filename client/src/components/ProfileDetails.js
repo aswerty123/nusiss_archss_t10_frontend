@@ -3,7 +3,10 @@ import 'tailwindcss/tailwind.css';
 /** @jsxImportSource @emotion/react */
 import tw from 'twin.macro';
 import { AiFillDelete } from 'react-icons/ai';
-import { useProfileQuery, useDeleteProfileMutation } from '../queries/user-queries';
+import {
+  useProfileQuery,
+  useDeleteProfileMutation,
+} from '../queries/user-queries';
 import { useAuth } from '../context/AuthContext';
 
 const ProfileContainer = tw.div`container mx-auto bg-white shadow-md rounded-md p-6`;
@@ -26,13 +29,13 @@ export const ProfileDetails = () => {
   const { address, email, phone, createdAt, updatedAt } =
     profileQuery?.data || {};
 
-    const { authData, logout } = useAuth();
+  const { authData, logout } = useAuth();
 
-    const handleDelete = (e) => {
-        e.preventDefault();
-        deleteProfileMutation.mutate();
-        logout();
-    }
+  const handleDelete = (e) => {
+    e.preventDefault();
+    deleteProfileMutation.mutate();
+    logout();
+  };
 
   return (
     <>
