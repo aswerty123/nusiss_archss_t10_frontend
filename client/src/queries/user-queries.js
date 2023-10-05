@@ -1,7 +1,5 @@
 import { DeleteData, GetData, PostData, SetAuthToken } from '../utils';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'; // Import from 'react-query' instead of '@tanstack/react-query'
-import { Link, useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 
 export function useSignUpMutation() {
   const queryClient = useQueryClient();
@@ -18,8 +16,8 @@ export function useSignUpMutation() {
     },
     {
       onSuccess: (data) => {
-        queryClient.setQueryData(['login'], data);
         queryClient.invalidateQueries(['login'], { exact: true });
+        queryClient.setQueryData(['login'], data);
         console.log('useSignUpMutation', data);
         SetAuthToken(data);
       },
@@ -38,11 +36,11 @@ export function useLoginMutation() {
         email,
         password,
       });
-      return response.data; 
+      return response.data;
     },
     {
       onSuccess: (data) => {
-          queryClient.invalidateQueries(['login'], { exact: true });
+        queryClient.invalidateQueries(['login'], { exact: true });
         queryClient.setQueryData(['login'], data);
         console.log('useLoginMutation:', data);
         SetAuthToken(data);
@@ -54,56 +52,57 @@ export function useLoginMutation() {
 }
 
 export function useProfileQuery() {
+  const profileQuery = useQuery({
+    queryKey: ['profile'],
+    queryFn: async () => {
+      const response = await GetData('customer/profile');
+      return response.data;
+    },
+  });
 
-    const profileQuery = useQuery({
-        queryKey: ['profile'],
-        queryFn: async () => {
-            const response = await GetData('customer/profile');
-              return response.data;
-        }
-    })
-    
-    return profileQuery;
-  }
+  return profileQuery;
+}
 
 export function useAddAddressMutation() {
-    const queryClient = useQueryClient();
-  
-    const addAddressMutation = useMutation(
-      async ({ street, postalCode, city, country }) => {
-        const response = await PostData('customer/address', {
-            street, postalCode, city, country
-        });
-        return response.data;
-      },
-      {
-        onSuccess: (data) => {
-            queryClient.invalidateQueries(['profile'], { exact: true });
-          queryClient.setQueryData(['profile'], data);
-          console.log('useAddAddressMutation:', data);
-        },
-      }
-    );
-  
-    return addAddressMutation;
-  }
+  const queryClient = useQueryClient();
 
-  export function useDeleteProfileMutation() {
-    const queryClient = useQueryClient();
-  
-    const deleteProfileMutation = useMutation(
-      async () => {
-        const response = await DeleteData('customer/profile');
-        return response.data; 
+  const addAddressMutation = useMutation(
+    async ({ street, postalCode, city, country }) => {
+      const response = await PostData('customer/address', {
+        street,
+        postalCode,
+        city,
+        country,
+      });
+      return response.data;
+    },
+    {
+      onSuccess: (data) => {
+        queryClient.invalidateQueries(['profile'], { exact: true });
+        queryClient.setQueryData(['profile'], data);
+        console.log('useAddAddressMutation:', data);
       },
-      {
-        onSuccess: (data) => {
-          queryClient.invalidateQueries(['profile'], { exact: true });
-          console.log('useDeleteProfileMutation:', data);
-        },
-      }
-    );
-  
-    return deleteProfileMutation;
-  }
+    }
+  );
 
+  return addAddressMutation;
+}
+
+export function useDeleteProfileMutation() {
+  const queryClient = useQueryClient();
+
+  const deleteProfileMutation = useMutation(
+    async () => {
+      const response = await DeleteData('customer/profile');
+      return response.data;
+    },
+    {
+      onSuccess: (data) => {
+        queryClient.invalidateQueries(['profile'], { exact: true });
+        console.log('useDeleteProfileMutation:', data);
+      },
+    }
+  );
+
+  return deleteProfileMutation;
+}

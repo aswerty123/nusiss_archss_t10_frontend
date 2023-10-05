@@ -6,8 +6,10 @@ import { AiFillDelete } from 'react-icons/ai';
 import { useProfileQuery, useDeleteProfileMutation } from '../queries/user-queries';
 import { useAuth } from '../context/AuthContext';
 
-const ProfileContainer = tw.div`container mx-auto lg:w-2/3 py-8 px-4`;
+const ProfileContainer = tw.div`container mx-auto bg-white shadow-md rounded-md p-6`;
+// const ProfileContainer = tw.div`container mx-auto lg:w-2/3 py-8 px-4`;
 const DeleteProfileButton = tw.button`flex items-center bg-red-600 hover:bg-red-700 py-1 px-2 text-white font-bold rounded focus:outline-none`;
+// const MainTitle = tw.div.h2`flex items-center justify-between mb-4 text-xl font-semibold text-gray-800`;
 const MainTitle = tw.h2`text-2xl font-semibold mb-4 flex items-center`;
 const SecondaryTitle = tw.h3`text-lg font-semibold mb-2`;
 // const ProfileContainer = tw.div`flex items-center justify-center bg-gray-100 py-12`;

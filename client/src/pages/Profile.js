@@ -1,6 +1,6 @@
 import React from 'react';
 import { ProfileDetails } from '../components/ProfileDetails';
-import { AddAddressForm } from '../components/AddAddress';
+import { AddAddressForm } from '../components/AddAddressForm';
 
 /** @jsxImportSource @emotion/react */
 import tw, { styled } from 'twin.macro';

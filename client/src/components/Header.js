@@ -55,7 +55,7 @@ export const Header = () => {
           <span class="font-medium">WishList</span>
         </Item>
         <Item>
-          <AiOutlineShoppingCart tw="h-6 w-8" />
+          <AiOutlineShoppingCart tw="h-6 w-8" onClick={() => navigate('/test')}/>
           <span class="font-medium">Cart</span>
         </Item>
         {authData ? (<>

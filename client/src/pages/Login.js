@@ -14,7 +14,8 @@ import tw, { styled } from 'twin.macro';
 const LoginFormContainer = tw.div`flex min-h-full flex-wrap flex-col justify-center px-12 py-12 bg-gray-100`;
 const LoginFormHeader = tw.div`text-center text-2xl font-bold leading-9 tracking-tight mx-10 text-gray-900 bg-white `;
 const LoginFormBody = tw.div`mt-10 mx-auto w-full max-w-sm space-y-6 bg-white`;
-const Input = tw.input`block w-full mt-2 rounded-md border-0 py-1.5 px-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600`;
+const Input = tw.input`w-full px-4 py-2 border border-gray-300 rounded-md focus:ring focus:ring-indigo-500 focus:border-indigo-500 focus:outline-none`;
+const SelectStyle = tw.select`w-full px-4 py-2 border border-gray-300 rounded-md focus:ring focus:ring-indigo-500 focus:border-indigo-500 focus:outline-none`
 const SubmitButton = tw.div
   .button`flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600`;
 const FieldLabel = tw.label`block text-sm font-medium leading-6 text-gray-900`;
@@ -26,6 +27,7 @@ const SwitchLink = styled(Switch)(({ link }) => [
 export const Login = () => {
   const [formData, setFormData] = useState({
     email: '',
+    role: '',
     password: '',
     phone: '',
   });
@@ -86,6 +88,20 @@ export const Login = () => {
                 required
               />
             </div>
+            <div>
+        <FieldLabel for="role">Role</FieldLabel>
+        <SelectStyle
+          id="role"
+          name="role"
+          onChange={(e) => handleChange(e)}
+          value={formData.role}
+          required
+        >
+          <option value="" disabled>Select Role</option>
+          <option value="buyer">Buyer</option>
+          <option value="seller">Seller</option>
+        </SelectStyle>
+      </div>
             {isSignup ? (
               <div>
                 <FieldLabel for="phone">Phone</FieldLabel>
