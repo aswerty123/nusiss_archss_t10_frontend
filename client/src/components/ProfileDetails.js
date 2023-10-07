@@ -16,17 +16,11 @@ const DeleteProfileButton = tw.button`flex items-center bg-red-600 hover:bg-red-
 const MainTitle = tw.h2`text-2xl font-semibold mb-4 flex items-center`;
 const SecondaryTitle = tw.h3`text-lg font-semibold mb-2`;
 // const ProfileContainer = tw.div`flex items-center justify-center bg-gray-100 py-12`;
-const ProfileCard = tw.div`bg-white rounded-lg shadow-lg p-8 max-w-screen-sm w-full`;
-const DetailItem = tw.div`mb-6`;
-const DetailLabel = tw.p`text-gray-600 text-sm mb-1`;
-const DetailValue = tw.p`text-gray-800 font-semibold`;
-const AddressItem = tw.div`mb-8`;
-const Timestamps = tw.div`flex justify-between text-sm text-gray-600`;
 
 export const ProfileDetails = () => {
   const profileQuery = useProfileQuery();
   const deleteProfileMutation = useDeleteProfileMutation();
-  const { address, email, phone, createdAt, updatedAt } =
+  const { address, email, phone, role, createdAt, updatedAt } =
     profileQuery?.data || {};
 
   const { authData, logout } = useAuth();
@@ -55,6 +49,9 @@ export const ProfileDetails = () => {
           </p>
           <p>
             <strong>Phone:</strong> {phone}
+          </p>
+          <p>
+            <strong>Role:</strong> {role}
           </p>
         </div>
         <div className="mb-4">

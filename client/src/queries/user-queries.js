@@ -6,11 +6,12 @@ export function useSignUpMutation() {
 
   const signUpMutation = useMutation(
     // Pass an async function to `mutationFn`
-    async ({ email, password, phone }) => {
+    async ({ email, password, phone, role }) => {
       const response = await PostData('customer/signup', {
         email,
         password,
         phone,
+        role,
       });
       return response.data; // Return the response data to be used in `onSuccess` and handle errors
     },

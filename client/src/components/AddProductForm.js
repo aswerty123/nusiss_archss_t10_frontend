@@ -3,18 +3,24 @@ import { useMutation } from '@tanstack/react-query';
 import { PostData } from '../utils';
 import { useCreateProductMutation } from '../queries/product-queries';
 import { AiOutlinePlus } from 'react-icons/ai';
+import pako from 'pako';
+import Compressor from 'compressorjs';
 
 /** @jsxImportSource @emotion/react */
 import tw, { styled } from 'twin.macro';
 
 const FormContainer = tw.div`mx-auto w-1/3 max-w-md mx-auto bg-white p-6 rounded-md shadow-md`;
-const FormGroup = tw.div`grid grid-cols-1 gap-3 mt-4`;
+const FormGroup = tw.div`grid grid-cols-1 gap-0.5 mt-2`;
 const LabelStyle = tw.label`block text-sm font-medium text-gray-600`;
 const AddAddressButton = tw.button`flex items-center bg-indigo-600 hover:bg-indigo-700 py-1 px-2 text-white font-bold rounded focus:outline-none `;
 const MainTitle = tw.h2`text-2xl font-semibold mb-4`;
 const InputStyle = tw.input`mt-1 p-2 w-full border rounded-md`;
+const ImageUploadContainer = tw.div`mt-2 flex items-center`;
+const ImageUploadInput = tw.input`mt-1 p-2 w-full border rounded-md`;
 
-/* New Product Create Request Body
+export const AddProductForm = () => {
+ 
+  /* New Product Create Request Body
 {
         name: '',
         description: '',
@@ -28,7 +34,6 @@ const InputStyle = tw.input`mt-1 p-2 w-full border rounded-md`;
         active: ''
       }
 */
-export const CreateProductForm = () => {
   const [formData, setFormData] = useState({
     name: '',
     desc: '',
@@ -41,6 +46,95 @@ export const CreateProductForm = () => {
   });
 
   const createProductMutation = useCreateProductMutation();
+
+  // const handleImageChange = (e) => {
+  //   const file = e.target.files[0];
+  //   const reader = new FileReader();
+
+  //   reader.onloadend = () => {
+  //     setFormData((prevFormData) => ({
+  //       ...prevFormData,
+  //       banner: reader.result,
+  //     }));
+  //   };
+
+  //   if (file) {
+  //     reader.readAsDataURL(file);
+  //   }
+  // };
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+  
+    new Compressor(file, {
+      quality: 0.2,
+      success: (result) => {
+        const reader = new FileReader();
+  
+        reader.onloadend = () => {
+          setFormData((prevFormData) => ({
+            ...prevFormData,
+            banner: reader.result,
+          }));
+        };
+  
+        reader.readAsDataURL(result);
+      },
+      error: (err) => {
+        console.log(err.message);
+      },
+    });
+  };
+
+// const handleImageChange = (e) => {
+//   const file = e.target.files[0];
+//   const reader = new FileReader();
+
+//   reader.onloadend = () => {
+//     const binaryString = atob(reader.result.split(',')[1]); // Extract base64 data
+//     const binaryData = new Uint8Array(binaryString.length);
+//     for (let i = 0; i < binaryString.length; i++) {
+//       binaryData[i] = binaryString.charCodeAt(i);
+//     }
+
+//     // Compress the binary data using pako
+//     const compressedData = pako.deflate(binaryData, { to: 'string' });
+
+//     // Set the compressed base64 data directly
+//     setFormData((prevFormData) => ({
+//       ...prevFormData,
+//       banner: btoa(compressedData),
+//     }));
+//   };
+
+//   if (file) {
+//     reader.readAsDataURL(file);
+//   }
+// };
+  
+
+  // const handleImageChange = (e) => {
+  //   const files = e.target.files;
+  //   const imageFiles = Array.from(files).map((file) => {
+  //     const reader = new FileReader();
+  //     reader.readAsDataURL(file);
+  //     return new Promise((resolve) => {
+  //       reader.onloadend = () => {
+  //         resolve({
+  //           data: reader.result,
+  //           contentType: file.type,
+  //         });
+  //       };
+  //     });
+  //   });
+
+  //   Promise.all(imageFiles).then((images) => {
+  //     setFormData((prevFormData) => ({
+  //       ...prevFormData,
+  //       images,
+  //     }));
+  //   });
+  // };
 
   const handleChange = (e) => {
     setFormData((prevFormData) => ({
@@ -61,6 +155,8 @@ export const CreateProductForm = () => {
       available: formData.available,
       suplier: formData.suplier,
     });
+    console.log(formData);
+    console.log("===>"+formData.banner);
     setFormData({
       name: '',
       desc: '',
@@ -107,7 +203,24 @@ export const CreateProductForm = () => {
             required
           />
         </FormGroup>
+        {/* <FormGroup>
+          <LabelStyle>Product Images</LabelStyle>
+          <ImageUploadContainer>
+            <ImageUploadInput type="file" onChange={handleImageChange} multiple required />
+          </ImageUploadContainer>
+        </FormGroup> */}
         <FormGroup>
+          <LabelStyle>Product Images</LabelStyle>
+          <ImageUploadContainer>
+            <ImageUploadInput
+              type="file"
+              // name="banner"
+              onChange={handleImageChange}
+              required
+            />
+          </ImageUploadContainer>
+        </FormGroup>
+        {/* <FormGroup>
           <LabelStyle>Product Image Url</LabelStyle>
           <InputStyle
             type="text"
@@ -116,7 +229,7 @@ export const CreateProductForm = () => {
             onChange={handleChange}
             required
           />
-        </FormGroup>
+        </FormGroup> */}
         <FormGroup>
           <LabelStyle>Quantity</LabelStyle>
           <InputStyle
@@ -160,7 +273,7 @@ export const CreateProductForm = () => {
         <div tw="my-8">
           <AddAddressButton type="button" onClick={handleSubmit}>
             <AiOutlinePlus className="mr-2" />
-            Address
+            Product
           </AddAddressButton>
         </div>
       </form>

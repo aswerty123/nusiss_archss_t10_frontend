@@ -3,9 +3,6 @@ import React, { useState, useEffect, useRef } from 'react';
 // import { onSignup, onLogin } from '../store/actions';
 // import { Outlet, Navigate } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
-import { GetData, PostData, SetAuthToken } from '../utils/';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { useSignUpMutation, useLoginMutation } from '../queries/user-queries';
 import { useAuth } from '../context/AuthContext';
 
 /** @jsxImportSource @emotion/react */
@@ -15,7 +12,7 @@ const LoginFormContainer = tw.div`flex min-h-full flex-wrap flex-col justify-cen
 const LoginFormHeader = tw.div`text-center text-2xl font-bold leading-9 tracking-tight mx-10 text-gray-900 bg-white `;
 const LoginFormBody = tw.div`mt-10 mx-auto w-full max-w-sm space-y-6 bg-white`;
 const Input = tw.input`w-full px-4 py-2 border border-gray-300 rounded-md focus:ring focus:ring-indigo-500 focus:border-indigo-500 focus:outline-none`;
-const SelectStyle = tw.select`w-full px-4 py-2 border border-gray-300 rounded-md focus:ring focus:ring-indigo-500 focus:border-indigo-500 focus:outline-none`
+const SelectStyle = tw.select`w-full px-4 py-2 border border-gray-300 rounded-md focus:ring focus:ring-indigo-500 focus:border-indigo-500 focus:outline-none`;
 const SubmitButton = tw.div
   .button`flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600`;
 const FieldLabel = tw.label`block text-sm font-medium leading-6 text-gray-900`;
@@ -54,6 +51,7 @@ export const Login = () => {
         email: formData.email,
         password: formData.password,
         phone: formData.phone,
+        role: formData.role,
       });
     } else {
       login({
@@ -61,6 +59,7 @@ export const Login = () => {
         password: formData.password,
       });
     }
+    navigate('/login');
     navigate('/');
   };
 
@@ -88,33 +87,39 @@ export const Login = () => {
                 required
               />
             </div>
-            <div>
-        <FieldLabel for="role">Role</FieldLabel>
-        <SelectStyle
-          id="role"
-          name="role"
-          onChange={(e) => handleChange(e)}
-          value={formData.role}
-          required
-        >
-          <option value="" disabled>Select Role</option>
-          <option value="buyer">Buyer</option>
-          <option value="seller">Seller</option>
-        </SelectStyle>
-      </div>
-            {isSignup ? (
-              <div>
-                <FieldLabel for="phone">Phone</FieldLabel>
 
-                <Input
-                  id="phone"
-                  name="phone"
-                  type="text"
-                  onChange={(e) => handleChange(e)}
-                  value={formData.phone}
-                  required
-                />
-              </div>
+            {isSignup ? (
+              <>
+                {' '}
+                <div>
+                  <FieldLabel for="role">Role</FieldLabel>
+                  <SelectStyle
+                    id="role"
+                    name="role"
+                    onChange={(e) => handleChange(e)}
+                    value={formData.role}
+                    required
+                  >
+                    <option value="" disabled>
+                      Select Role
+                    </option>
+                    <option value="buyer">Buyer</option>
+                    <option value="seller">Seller</option>
+                  </SelectStyle>
+                </div>
+                <div>
+                  <FieldLabel for="phone">Phone</FieldLabel>
+
+                  <Input
+                    id="phone"
+                    name="phone"
+                    type="text"
+                    onChange={(e) => handleChange(e)}
+                    value={formData.phone}
+                    required
+                  />
+                </div>
+              </>
             ) : (
               ''
             )}

@@ -6,7 +6,7 @@ export function useCreateProductMutation() {
 
   const createProductMutation = useMutation(
     async ({ name, desc, type, banner, unit, price, available, suplier }) => {
-      const response = await PostData('product/create', {
+      const response = await PostData('products/create', {
         name,
         desc,
         type,
@@ -35,7 +35,7 @@ export function useProductCategoryQuery(type) {
   const productCategoryQuery = useQuery({
     queryKey: ['product', type],
     queryFn: async () => {
-      const response = await GetData(`category/${type}`);
+      const response = await GetData(`products/category/${type}`);
       return response.data;
     },
   });
@@ -47,7 +47,7 @@ export function useProductIdQuery(id) {
   const productIdQuery = useQuery({
     queryKey: ['product', id],
     queryFn: async () => {
-      const response = await GetData(`${id}`);
+      const response = await GetData(`products/${id}`);
       return response.data;
     },
   });
@@ -60,7 +60,7 @@ export function useGetProductsByIdsArrayMutation() {
 
   const getProductsByIdsArrayMutation = useMutation(
     async ({ ids }) => {
-      const response = await PostData('ids', { ids });
+      const response = await PostData('products/ids', { ids });
       return response.data;
     },
     {
@@ -85,10 +85,29 @@ export function useAllProductsQuery() {
   const allProductsQuery = useQuery({
     queryKey: ['product'],
     queryFn: async () => {
-      const response = await GetData('');
+      const response = await GetData('products/');
       return response.data;
     },
   });
 
   return allProductsQuery;
+}
+
+export function useDeleteProductMutation() {
+  const queryClient = useQueryClient();
+
+  const deleteProfileMutation = useMutation(
+    async (id) => {
+      const response = await DeleteData(`products/${id}`);
+      return response.data;
+    },
+    {
+      onSuccess: (data) => {
+        queryClient.invalidateQueries(['product'], { exact: true });
+        console.log('useDeleteProductMutation:', data);
+      },
+    }
+  );
+
+  return deleteProfileMutation;
 }

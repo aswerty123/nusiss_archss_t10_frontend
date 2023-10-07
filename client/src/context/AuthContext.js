@@ -14,11 +14,12 @@ export const AuthProvider = ({ children }) => {
       : null
   );
 
-  const signup = ({ email, password, phone }) => {
+  const signup = ({ email, password, phone, role }) => {
     signUpMutation.mutate({
       email,
       password,
       phone,
+      role,
     });
     if (signUpMutation.status === 'success') {
       setAuthData(signUpMutation.data);
@@ -32,6 +33,7 @@ export const AuthProvider = ({ children }) => {
     });
     if (loginMutation.status === 'success') {
       setAuthData(loginMutation.data);
+      console.log(loginMutation.data);
     }
   };
 

@@ -6,6 +6,8 @@ import {
   AiOutlineHeart,
   AiFillShop,
 } from 'react-icons/ai';
+
+import { ImBoxAdd } from 'react-icons/im';
 import { Link, useNavigate } from 'react-router-dom';
 import {
   useMutation,
@@ -46,6 +48,10 @@ export const Header = () => {
           <BiSearchAlt2 tw=" h-8 w-8" />
           <span class="font-medium">Search</span>
         </Item>
+        <Item onClick={() => navigate('/create-product')}>
+          <ImBoxAdd tw=" h-6 w-8" />
+          <span class="font-medium">Product</span>
+        </Item>
         <Item>
           <BsFillBoxSeamFill tw=" h-6 w-8" />
           <span class="font-medium">Order</span>
@@ -54,24 +60,26 @@ export const Header = () => {
           <AiOutlineHeart tw=" h-6 w-8" />
           <span class="font-medium">WishList</span>
         </Item>
-        <Item>
-          <AiOutlineShoppingCart tw="h-6 w-8" onClick={() => navigate('/test')}/>
+        <Item onClick={() => navigate('/test')}>
+          <AiOutlineShoppingCart tw="h-6 w-8" />
           <span class="font-medium">Cart</span>
         </Item>
-        {authData ? (<>
-          <Item onClick={() => navigate('/profile')}>
-          <BsPersonCircle tw=" h-6 w-8" />
-          <span class="font-medium">Profile</span>
-        </Item>
-        <Item
-            tw="rounded-md border-2 border-gray-200"
-            onClick={() => {
-              logout();
-            }}
-          >
-            <BiLogOut tw="h-6 w-8 rotate-180" />
-            <span class="font-medium">Logout</span>{' '}
-          </Item></>
+        {authData ? (
+          <>
+            <Item onClick={() => navigate('/profile')}>
+              <BsPersonCircle tw=" h-6 w-8" />
+              <span class="font-medium">Profile</span>
+            </Item>
+            <Item
+              tw="rounded-md border-2 border-gray-200"
+              onClick={() => {
+                logout();
+              }}
+            >
+              <BiLogOut tw="h-6 w-8 rotate-180" />
+              <span class="font-medium">Logout</span>{' '}
+            </Item>
+          </>
         ) : (
           <Item
             tw="rounded-md border-2 border-gray-200"

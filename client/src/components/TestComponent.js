@@ -1,9 +1,168 @@
 import React from 'react';
+// import { FaHeart, FaShoppingCart, FaShoppingBag } from 'react-icons/fa';
+import { FaHeart, FaShoppingCart, FaCheck } from 'react-icons/fa';
+import { AiOutlineHeart } from 'react-icons/ai';
+
+const TestCard = () => (
+  <div className="w-1/4 p-4">
+    <div className="border border-gray-200 rounded-lg overflow-hidden">
+      <a href="/e-commerce/product-details/7">
+        <div
+          className="w-full h-32 bg-cover bg-center"
+          style={{
+            backgroundImage:
+              "url('https://www.berrydashboard.io/static/media/prod-7.4fef88dc4d8fdacea52a.png')",
+          }}
+        ></div>
+      </a>
+      <div className="p-4">
+        <a
+          href="/e-commerce/product-details/7"
+          className="text-lg font-semibold mb-2 block hover:text-indigo-600"
+        >
+          Apple MacBook Pro with Iphone
+        </a>
+        <p className="text-gray-600 text-sm mb-4">
+          11th Generation Intel® Core™ i5-11320H ...
+        </p>
+        <div className="flex items-center justify-between">
+          {/* Rating Stars */}
+          {/* ... */}
+          <span className="text-gray-500 text-sm">(14.59+)</span>
+        </div>
+        <div className="flex items-center mt-4">
+          <h4 className="text-lg font-semibold mr-1">$14.59</h4>
+          <h6 className="text-sm">$</h6>
+          <button className="bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-1.5 text-sm font-semibold rounded focus:outline-none focus:shadow-outline">
+            Add to Cart
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+);
 
 export const TestComponent = () => {
+  const title = 'Hamster';
+  const description = 'Cute Hamster Meme';
+  const price = '12';
+  const imageUrl =
+    'https://images2.fanpop.com/image/photos/8600000/random-animals-animals-8675984-377-442.jpg';
+
   return (
     <>
-      <div className="w-72 relative">
+      <div className="flex p-4 border">
+        <div className="w-1/2 pr-4">
+          <img src={imageUrl} alt={title} className="w-full h-auto" />
+        </div>
+        <div className="w-1/2 flex flex-col">
+          {/* Title */}
+          <div className='flex'>
+            <h2 className="text-xl mt-2 flex items-center">{title}</h2>
+            <div className="flex-grow" />
+            <div className="space-y-2 mt-4">
+            <AiOutlineHeart size={30} className="mr-2" /></div>
+          </div>
+          {/* Description */}
+          <p>{description}</p>
+          {/* Price */}
+          <p>${price}</p>
+
+          {/* Spacer */}
+          <div className="flex-grow" />
+
+          {/* Buttons */}
+          <div className="space-y-2 mt-4">
+            {/* Add to Cart Button */}
+            <button className="w-full flex items-center justify-center border-2 text-black border-black rounded-full py-2 px-4 hover:bg-blue-500 hover:text-white hover:border-blue-500 transition duration-300 ease-in-out focus:outline-none focus:shadow-outline">
+              <FaShoppingCart className="mr-2" /> Add to Cart
+            </button>
+
+            {/* Proceed to Checkout Button */}
+            <button className="w-full flex items-center justify-center border-2 text-black border-black rounded-full py-2 px-4 hover:bg-green-500 hover:text-white hover:border-green-500 transition duration-300 ease-in-out focus:outline-none focus:shadow-outline">
+              Proceed to Checkout
+            </button>
+          </div>
+        </div>
+        {/* <div className="w-1/2 flex flex-col">
+          <h2 className="text-xl mt-2 flex items-center">
+            <AiOutlineHeart className="mr-2" />
+            {title}
+          </h2>
+          <p>{description}</p>
+          <p>${price}</p>
+          <div className=" space-y-2 mt-4">
+            <button className="w-full flex items-center justify-center border-2 textbBlack border-black rounded-full py-2 px-4 hover:bg-blue-500 hover:text-white hover:border-blue-500 transition duration-300 ease-in-out focus:outline-none focus:shadow-outline">
+              <FaShoppingCart className="mr-2" /> Add to Cart
+            </button>
+            <button className="w-full flex items-center justify-center border-2 textbBlack border-black rounded-full py-2 px-4 hover:bg-green-500 hover:text-white hover:border-green-500 transition duration-300 ease-in-out focus:outline-none focus:shadow-outline">
+              Proceed to Checkout
+            </button>
+          </div>
+        </div> */}
+      </div>
+      {/* <div className="flex p-4 border">
+      <div className="w-1/2">
+        <img src={imageUrl} alt={title} className="w-full" />
+      </div>
+      <div className="w-1/2 pl-4">
+        <h2 className="text-xl mt-2">{title}</h2><AiOutlineHeart/>
+        <p>{description}</p>
+        <p>${price}</p>
+        <div className="flex flex-col space-y-2 mt-4">
+          <button className="w-full flex items-center justify-center border-2 textbBlack border-black rounded-full py-2 px-4 hover:bg-blue-500 hover:text-white hover:border-blue-500 transition duration-300 ease-in-out focus:outline-none focus:shadow-outline">
+      <FaShoppingCart className="mr-2" /> Add to Cart
+    </button>
+    <button className="w-full flex items-center justify-center border-2 textbBlack border-black rounded-full py-2 px-4 hover:bg-green-500 hover:text-white hover:border-green-500 transition duration-300 ease-in-out focus:outline-none focus:shadow-outline">
+     Proceed to Checkout
+    </button>
+        </div>
+      </div>
+    </div> */}
+      {/* <div className="container mx-auto mt-8 p-8">
+      <div className="flex flex-col md:flex-row">
+        <div className="md:w-1/2">
+          <img src={imageUrl} alt={title} className="w-full h-auto rounded-lg" />
+        </div>
+        <div className="md:w-1/2 md:ml-8 mt-4 md:mt-0">
+          <h2 className="text-3xl font-semibold mb-4">{title}</h2>
+          <p className="text-gray-700 mb-4">{description}</p>
+          <p className="text-xl font-semibold mb-4">${price}</p>
+          <div className="flex items-center mb-4">
+            <button className="mr-4 text-red-500 hover:text-red-700 focus:outline-none">
+              <FaHeart className="text-xl" />
+            </button>
+            <button className="mr-4 text-blue-500 hover:text-blue-700 focus:outline-none">
+              <FaShoppingCart className="text-xl" />
+            </button>
+            <button className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-700 focus:outline-none focus:shadow-outline">
+              Add to Cart <FaShoppingBag className="ml-2" />
+            </button>
+          </div>
+        </div>
+      </div>
+    </div> */}
+      {''}
+      {/* <div className="container mx-auto p-4 flex flex-wrap">
+    <TestCard/>
+      <TestCard/>
+      <TestCard/>
+      <TestCard/>
+      <TestCard/>
+      <TestCard/>
+      <TestCard/>
+      <TestCard/>
+      <TestCard/>
+      <TestCard/>
+      <TestCard/>
+      <TestCard/>
+      <TestCard/>
+      <TestCard/>
+      <TestCard/>
+      <TestCard/>
+      </div> */}
+      {''}
+      {/* <div className="w-72 relative">
         <select
           className="block appearance-none w-full bg-white border border-gray-300 text-gray-700 py-2 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
           id="version"
@@ -26,7 +185,7 @@ export const TestComponent = () => {
             />
           </svg>
         </div>
-      </div>
+      </div> */}
       {''}
       {/* <div className="p-4">
       <form>
