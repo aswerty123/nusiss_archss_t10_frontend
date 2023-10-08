@@ -19,6 +19,7 @@ import { CreateProduct } from './pages/CreateProduct';
 import { TestBuyer } from './components/TestBuyer';
 import { TestSeller } from './components/TestSeller';
 import { ProductDetails } from './pages/ProductDetails';
+import { SearchItem } from './pages/SearchItem';
 // import { PrivateRoutes } from './utils/PrivateRoutes';
 
 function App() {
@@ -30,7 +31,8 @@ function App() {
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/test" element={<TestComponent />} />
-
+        <Route path="/search" element={<SearchItem />} />
+        <Route path="/product-details/:id" element={<ProductDetails />} />
         <Route
           element={
             <PrivateRoutes redirectPath="/login" isAllowed={!!authData} />
@@ -39,14 +41,12 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/profile" element={<Profile />} />
 
-          <Route path="/create-product" element={<CreateProduct />} />
-          <Route path="/product-details/:id" element={<ProductDetails />} />
         </Route>
         <Route
           element={
             <PrivateRoutes
-              redirectPath="/home"
-              isAllowed={!!authData && authData.role === 'buyer'}
+            redirectPath="/test-buyer"
+            isAllowed={!!authData && authData.role === 'buyer'}
             />
           }
         >
@@ -55,12 +55,13 @@ function App() {
         <Route
           element={
             <PrivateRoutes
-              redirectPath="/home"
-              isAllowed={!!authData && authData.role === 'seller'}
+            redirectPath="/test-seller"
+            isAllowed={!!authData && authData.role === 'seller'}
             />
           }
         >
           <Route path="/test-seller" element={<TestSeller />} />
+          <Route path="/create-product" element={<CreateProduct />} />
         </Route>
       </Routes>
     </>

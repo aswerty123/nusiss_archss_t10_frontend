@@ -94,7 +94,7 @@ export const AddAddressForm = () => {
         </FormGroup>
         <div tw="my-8">
           <AddAddressButton type="submit">
-            <AiOutlinePlus className="mr-2" />
+            <AiOutlinePlus tw="mr-2" />
             Address
           </AddAddressButton>
         </div>

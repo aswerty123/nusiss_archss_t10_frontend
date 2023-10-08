@@ -59,8 +59,9 @@ export const Login = () => {
         password: formData.password,
       });
     }
-    navigate('/login');
-    navigate('/');
+    // window.location.reload();
+    // navigate('/login');
+    // navigate('/');
   };
 
   return (

@@ -1,13 +1,15 @@
 import React from 'react';
 import 'tailwindcss/tailwind.css';
-/** @jsxImportSource @emotion/react */
-import tw from 'twin.macro';
+
 import { AiFillDelete } from 'react-icons/ai';
 import {
   useProfileQuery,
   useDeleteProfileMutation,
 } from '../queries/user-queries';
 import { useAuth } from '../context/AuthContext';
+
+/** @jsxImportSource @emotion/react */
+import tw from 'twin.macro';
 
 const ProfileContainer = tw.div`container mx-auto bg-white shadow-md rounded-md p-6`;
 // const ProfileContainer = tw.div`container mx-auto lg:w-2/3 py-8 px-4`;
@@ -34,14 +36,14 @@ export const ProfileDetails = () => {
   return (
     <>
       <ProfileContainer>
-        <div className="flex items-center justify-between mb-4">
+        <div tw="flex items-center justify-between mb-4">
           <MainTitle>User Details</MainTitle>
           <DeleteProfileButton type="button" onClick={handleDelete}>
-            <AiFillDelete className="mr-2" />
+            <AiFillDelete tw="mr-2" />
             Profile
           </DeleteProfileButton>
         </div>
-        <div className="mb-4">
+        <div tw="mb-4">
           <SecondaryTitle>User Information:</SecondaryTitle>
           {/* <p><strong>User ID:</strong> {_id}</p> */}
           <p>
@@ -54,10 +56,10 @@ export const ProfileDetails = () => {
             <strong>Role:</strong> {role}
           </p>
         </div>
-        <div className="mb-4">
+        <div tw="mb-4">
           <SecondaryTitle>Address:</SecondaryTitle>
           {address?.map((addr) => (
-            <div className="mx-auto bg-white p-4 rounded-lg shadow-lg">
+            <div tw="mx-auto bg-white p-4 rounded-lg shadow-lg">
               <div key={addr._id}>
                 <p>
                   <strong>Street:</strong> {addr.street}
@@ -76,7 +78,7 @@ export const ProfileDetails = () => {
           ))}
         </div>
 
-        <div className="mb-4">
+        <div tw="mb-4">
           <SecondaryTitle>Timestamps:</SecondaryTitle>
           <p>
             <strong>Created At:</strong> {createdAt}

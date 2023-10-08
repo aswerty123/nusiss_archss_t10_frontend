@@ -3,7 +3,6 @@ import { useMutation } from '@tanstack/react-query';
 import { PostData } from '../utils';
 import { useCreateProductMutation } from '../queries/product-queries';
 import { AiOutlinePlus } from 'react-icons/ai';
-import pako from 'pako';
 import Compressor from 'compressorjs';
 
 /** @jsxImportSource @emotion/react */
@@ -19,7 +18,6 @@ const ImageUploadContainer = tw.div`mt-2 flex items-center`;
 const ImageUploadInput = tw.input`mt-1 p-2 w-full border rounded-md`;
 
 export const AddProductForm = () => {
- 
   /* New Product Create Request Body
 {
         name: '',
@@ -65,19 +63,28 @@ export const AddProductForm = () => {
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
-  
+    var quality = 1.0;
+    const finalImageSize = 60000;
+    const fileSizeInBytes = file.size;
+
+    if(fileSizeInBytes > finalImageSize){
+      quality = finalImageSize / fileSizeInBytes;
+    }
+
+    console.log(`File size: ${fileSizeInBytes} bytes`);
+
     new Compressor(file, {
-      quality: 0.2,
+      quality: quality,
       success: (result) => {
         const reader = new FileReader();
-  
+
         reader.onloadend = () => {
           setFormData((prevFormData) => ({
             ...prevFormData,
             banner: reader.result,
           }));
         };
-  
+
         reader.readAsDataURL(result);
       },
       error: (err) => {
@@ -86,32 +93,31 @@ export const AddProductForm = () => {
     });
   };
 
-// const handleImageChange = (e) => {
-//   const file = e.target.files[0];
-//   const reader = new FileReader();
+  // const handleImageChange = (e) => {
+  //   const file = e.target.files[0];
+  //   const reader = new FileReader();
 
-//   reader.onloadend = () => {
-//     const binaryString = atob(reader.result.split(',')[1]); // Extract base64 data
-//     const binaryData = new Uint8Array(binaryString.length);
-//     for (let i = 0; i < binaryString.length; i++) {
-//       binaryData[i] = binaryString.charCodeAt(i);
-//     }
+  //   reader.onloadend = () => {
+  //     const binaryString = atob(reader.result.split(',')[1]); // Extract base64 data
+  //     const binaryData = new Uint8Array(binaryString.length);
+  //     for (let i = 0; i < binaryString.length; i++) {
+  //       binaryData[i] = binaryString.charCodeAt(i);
+  //     }
 
-//     // Compress the binary data using pako
-//     const compressedData = pako.deflate(binaryData, { to: 'string' });
+  //     // Compress the binary data using pako
+  //     const compressedData = pako.deflate(binaryData, { to: 'string' });
 
-//     // Set the compressed base64 data directly
-//     setFormData((prevFormData) => ({
-//       ...prevFormData,
-//       banner: btoa(compressedData),
-//     }));
-//   };
+  //     // Set the compressed base64 data directly
+  //     setFormData((prevFormData) => ({
+  //       ...prevFormData,
+  //       banner: btoa(compressedData),
+  //     }));
+  //   };
 
-//   if (file) {
-//     reader.readAsDataURL(file);
-//   }
-// };
-  
+  //   if (file) {
+  //     reader.readAsDataURL(file);
+  //   }
+  // };
 
   // const handleImageChange = (e) => {
   //   const files = e.target.files;
@@ -137,11 +143,20 @@ export const AddProductForm = () => {
   // };
 
   const handleChange = (e) => {
+    const { name, value, type, checked } = e.target;
+
     setFormData((prevFormData) => ({
       ...prevFormData,
-      [e.target.name]: e.target.value,
+      [name]: type === 'checkbox' ? checked : value,
     }));
   };
+
+  // const handleChange = (e) => {
+  //   setFormData((prevFormData) => ({
+  //     ...prevFormData,
+  //     [e.target.name]: e.target.value,
+  //   }));
+  // };
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -156,7 +171,7 @@ export const AddProductForm = () => {
       suplier: formData.suplier,
     });
     console.log(formData);
-    console.log("===>"+formData.banner);
+    console.log('===>' + formData.banner);
     setFormData({
       name: '',
       desc: '',
@@ -233,7 +248,7 @@ export const AddProductForm = () => {
         <FormGroup>
           <LabelStyle>Quantity</LabelStyle>
           <InputStyle
-            type="text"
+            type="number"
             name="unit"
             value={formData.unit}
             onChange={handleChange}
@@ -243,7 +258,7 @@ export const AddProductForm = () => {
         <FormGroup>
           <LabelStyle>Product Price</LabelStyle>
           <InputStyle
-            type="text"
+            type="number"
             name="price"
             value={formData.price}
             onChange={handleChange}
@@ -255,9 +270,8 @@ export const AddProductForm = () => {
           <InputStyle
             type="checkbox"
             name="available"
-            value={formData.available}
+            checked={formData.available}
             onChange={handleChange}
-            required
           />
         </FormGroup>
         <FormGroup>
@@ -271,8 +285,8 @@ export const AddProductForm = () => {
           />
         </FormGroup>
         <div tw="my-8">
-          <AddAddressButton type="button" onClick={handleSubmit}>
-            <AiOutlinePlus className="mr-2" />
+          <AddAddressButton type="submit">
+            <AiOutlinePlus tw="mr-2" />
             Product
           </AddAddressButton>
         </div>

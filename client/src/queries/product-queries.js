@@ -103,7 +103,7 @@ export function useDeleteProductMutation() {
     },
     {
       onSuccess: (data) => {
-        queryClient.invalidateQueries(['product'], { exact: true });
+        queryClient.invalidateQueries(['product']);
         console.log('useDeleteProductMutation:', data);
       },
     }
