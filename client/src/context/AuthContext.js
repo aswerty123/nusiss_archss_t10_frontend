@@ -23,6 +23,7 @@ export const AuthProvider = ({ children }) => {
     });
     if (signUpMutation.status === 'success') {
       setAuthData(signUpMutation.data);
+      return true
     }
   };
 
@@ -34,6 +35,7 @@ export const AuthProvider = ({ children }) => {
     if (loginMutation.status === 'success') {
       setAuthData(loginMutation.data);
       console.log(loginMutation.data);
+      return true
     }
   };
 

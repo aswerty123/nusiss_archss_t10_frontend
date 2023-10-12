@@ -8,7 +8,7 @@ import { BsFillTrashFill} from 'react-icons/bs'
 /** @jsxImportSource @emotion/react */
 import tw, { styled } from 'twin.macro';
 import { useAuth } from '../context/AuthContext';
-import { useAddToWishlistMutation, useCartQuery, useDeleteFromWishlistMutation, useWishlistQuery } from '../queries/shopping-queries';
+import { useAddToCartMutation, useAddToWishlistMutation, useCartQuery, useDeleteFromWishlistMutation, useWishlistQuery } from '../queries/shopping-queries';
 
 const CardContainer = tw.div`border border-gray-200 rounded-lg overflow-hidden relative`;
 const CardImage = tw.div`w-full h-32 bg-center bg-no-repeat relative`
@@ -46,6 +46,7 @@ export const ProductCard = ({ product, wishlistIdArray}) => {
     e.preventDefault();
     deleteFromWishlistMutation.mutate({id: product._id});
   }
+
 
   const handleDelete = (e) => {
     e.preventDefault();
@@ -102,12 +103,7 @@ export const ProductCard = ({ product, wishlistIdArray}) => {
             onClick={handleDelete}
           >
             Delete
-          </CardButton>:<CardButton
-            tw="bg-blue-500 hover:bg-blue-600"
-            
-          >
-            Add to Cart
-          </CardButton>:""}
+          </CardButton>:"":""}
         </div>
       </CardContainer>
     </>

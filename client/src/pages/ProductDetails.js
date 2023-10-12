@@ -29,7 +29,7 @@ const RedLongButton = tw.button`hover:bg-red-500 hover:text-white hover:border-r
 
 export const ProductDetails = () => {
   const { authData } = useAuth();
-  const [qty, setQty] = useState(0);
+  const [qty, setQty] = useState(1);
 
   const { id } = useParams();
   const navigate = useNavigate();
@@ -61,7 +61,8 @@ export const ProductDetails = () => {
   const handleAddToCart = (e) => {
     e.preventDefault();
     addToCartMutation.mutate({ product_id: _id, qty: qty });
-    setQty(0);
+    navigate('/search');
+    // setQty(1);
   };
 
   const handleQty = (sign) => {
@@ -167,7 +168,7 @@ export const ProductDetails = () => {
             {authData ? (
               authData?.role === 'buyer' ? (
                 <>
-                  <BlueLongButton onClick={handleAddToCart}>
+                  <BlueLongButton onClick={handleAddToCart} >
                     <FaShoppingCart size={20} tw="mr-2" /> Add to Cart
                   </BlueLongButton>
 
