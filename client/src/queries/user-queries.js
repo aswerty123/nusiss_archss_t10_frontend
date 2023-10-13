@@ -1,8 +1,10 @@
+import { useNavigate } from 'react-router-dom';
 import { DeleteData, GetData, PostData, SetAuthToken } from '../utils';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 
 export function useSignUpMutation() {
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
 
   const signUpMutation = useMutation(
     // Pass an async function to `mutationFn`
@@ -21,6 +23,8 @@ export function useSignUpMutation() {
         queryClient.setQueryData(['login'], data);
         console.log('useSignUpMutation', data);
         SetAuthToken(data);
+        window.location.reload();
+        navigate('/home');
       },
     }
   );
@@ -30,6 +34,7 @@ export function useSignUpMutation() {
 
 export function useLoginMutation() {
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
 
   const loginMutation = useMutation(
     async ({ email, password }) => {
@@ -45,6 +50,8 @@ export function useLoginMutation() {
         queryClient.setQueryData(['login'], data);
         console.log('useLoginMutation:', data);
         SetAuthToken(data);
+        window.location.reload();
+        navigate('/home');
       },
     }
   );

@@ -143,7 +143,7 @@ export function useOrderIdQuery(id) {
   return productIdQuery;
 }
 
-export function useAllOrdersQuery(id) {
+export function useAllOrdersQuery() {
   const productIdQuery = useQuery({
     queryKey: ['order'],
     queryFn: async () => {

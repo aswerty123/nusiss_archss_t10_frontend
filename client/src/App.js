@@ -20,6 +20,10 @@ import { TestBuyer } from './components/TestBuyer';
 import { TestSeller } from './components/TestSeller';
 import { ProductDetails } from './pages/ProductDetails';
 import { SearchItem } from './pages/SearchItem';
+import { Landing } from './pages/Landing';
+import { CartDetails } from './pages/CartDetails';
+import { OrderDetails } from './pages/OrderDetails';
+import { OrderList } from './pages/OrderList';
 // import { PrivateRoutes } from './utils/PrivateRoutes';
 
 function App() {
@@ -32,13 +36,14 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/test" element={<TestComponent />} />
         <Route path="/search" element={<SearchItem />} />
+        <Route path="/" element={<Landing />} />
         <Route path="/product-details/:id" element={<ProductDetails />} />
         <Route
           element={
             <PrivateRoutes redirectPath="/login" isAllowed={!!authData} />
           }
         >
-          <Route path="/" element={<Home />} />
+          <Route path="/home" element={<Home />} />
           <Route path="/profile" element={<Profile />} />
 
         </Route>
@@ -51,6 +56,9 @@ function App() {
           }
         >
           <Route path="/test-buyer" element={<TestBuyer />} />
+          <Route path="/cart" element={<CartDetails />} />
+          <Route path="/order/:id" element={<OrderDetails />} />
+          <Route path="/order-list" element={<OrderList />} />
         </Route>
         <Route
           element={
@@ -64,6 +72,7 @@ function App() {
           <Route path="/create-product" element={<CreateProduct />} />
         </Route>
       </Routes>
+      
     </>
   );
 }

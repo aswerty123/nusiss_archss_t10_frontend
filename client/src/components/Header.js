@@ -40,7 +40,7 @@ export const Header = () => {
   return (
     <HeaderComponent>
       <LeftSideContainer>
-        <Link to="/">
+        <Link to={authData?"/home":"/"}>
           <div tw="flex items-center">
             <AiFillShop tw="h-10 w-10" />
             <span tw="font-medium text-3xl ml-2">The MarketPlace</span>
@@ -56,15 +56,15 @@ export const Header = () => {
         {authData ? (
           isBuyer ? (
             <>
-              <Item>
+              <Item onClick={() => navigate('/order-list')}>
                 <IoReceiptOutline tw="h-6 w-8" />
                 <IconText>Order</IconText>
               </Item>
-              <Item>
+              {/* <Item>
                 <AiOutlineHeart tw="h-6 w-8" />
                 <IconText>WishList</IconText>
-              </Item>
-              <Item onClick={() => navigate('/test')}>
+              </Item> */}
+              <Item onClick={() => navigate('/cart')}>
                 <AiOutlineShoppingCart tw="h-6 w-8" />
                 <IconText>Cart</IconText>
               </Item>{' '}

@@ -61,7 +61,7 @@ export const Login = () => {
     }
     // window.location.reload();
     // navigate('/login');
-    // navigate('/');
+    navigate('/home');
   };
 
   return (
