@@ -14,6 +14,7 @@ const LabelStyle = tw.label`block text-sm font-medium text-gray-600`;
 const AddAddressButton = tw.button`flex items-center bg-indigo-600 hover:bg-indigo-700 py-1 px-2 text-white font-bold rounded focus:outline-none `;
 const MainTitle = tw.h2`text-2xl font-semibold mb-4`;
 const InputStyle = tw.input`mt-1 p-2 w-full border rounded-md`;
+const InputStyleSelect = tw.select`mt-1 p-2 w-full border rounded-md`;
 const ImageUploadContainer = tw.div`mt-2 flex items-center`;
 const ImageUploadInput = tw.input`mt-1 p-2 w-full border rounded-md`;
 
@@ -36,13 +37,15 @@ export const AddProductForm = () => {
     name: '',
     desc: '',
     type: '',
-    banner: '',
+    imageData: '',
     unit: '',
     price: '',
     available: false,
-    suplier: '',
+    active: true,
   });
 
+  const [imageDataShow, setImageData] = useState(''); // State to store the Base64-encoded image
+  const imageInputRef = React.useRef(); //user to reset image after submit
   const createProductMutation = useCreateProductMutation();
 
   // const handleImageChange = (e) => {
@@ -62,35 +65,33 @@ export const AddProductForm = () => {
   // };
 
   const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    var quality = 1.0;
-    const finalImageSize = 60000;
-    const fileSizeInBytes = file.size;
+    const files = e.target.files; // Get an array of selected files
+    console.log(files);
+    if (files.length > 0) {
+      const base64Images = [];
 
-    if(fileSizeInBytes > finalImageSize){
-      quality = finalImageSize / fileSizeInBytes;
-    }
-
-    console.log(`File size: ${fileSizeInBytes} bytes`);
-
-    new Compressor(file, {
-      quality: quality,
-      success: (result) => {
+      // Loop through each selected file and convert it to Base64
+      for (let i = 0; i < files.length; i++) {
         const reader = new FileReader();
 
-        reader.onloadend = () => {
-          setFormData((prevFormData) => ({
-            ...prevFormData,
-            banner: reader.result,
-          }));
+        reader.onload = (event) => {
+          // When the file is loaded, convert it to Base64
+          const base64Image = event.target.result;
+          base64Images.push(base64Image);
+
+          // If we have processed all files, update the state
+          if (base64Images.length === files.length) {
+            setImageData(base64Images);
+          }
         };
 
-        reader.readAsDataURL(result);
-      },
-      error: (err) => {
-        console.log(err.message);
-      },
-    });
+        reader.readAsDataURL(files[i]); // Read the file as a data URL (Base64)
+      }
+    }
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      imageData: files,
+    }));
   };
 
   // const handleImageChange = (e) => {
@@ -143,11 +144,15 @@ export const AddProductForm = () => {
   // };
 
   const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
+    // const { name, value, type, checked } = e.target;
 
+    // setFormData((prevFormData) => ({
+    //   ...prevFormData,
+    //   [name]: type === 'checkbox' ? checked : value,
+    // }));
     setFormData((prevFormData) => ({
       ...prevFormData,
-      [name]: type === 'checkbox' ? checked : value,
+      [e.target.name]: e.target.value,
     }));
   };
 
@@ -158,36 +163,44 @@ export const AddProductForm = () => {
   //   }));
   // };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    createProductMutation.mutate({
+    const formDataToSubmit = {
       name: formData.name,
       desc: formData.desc,
       type: formData.type,
-      banner: formData.banner,
+      imageData: formData.imageData,
       unit: formData.unit,
       price: formData.price,
       available: formData.available,
-      suplier: formData.suplier,
-    });
-    console.log(formData);
-    console.log('===>' + formData.banner);
-    setFormData({
-      name: '',
-      desc: '',
-      type: '',
-      banner: '',
-      unit: '',
-      price: '',
-      available: false,
-      suplier: '',
-    });
+      active: formData.active,
+    };
+
+    try {
+      await createProductMutation.mutateAsync(formDataToSubmit); // Use mutateAsync to await the mutation
+      // Reset the form and clear the input value
+      setFormData({
+        name: '',
+        desc: '',
+        type: '',
+        imageData: '',
+        unit: '',
+        price: '',
+        available: false,
+        active: true,
+      });
+      imageInputRef.current.value = ''; // Reset the input field
+      setImageData(''); // Clear the displayed images
+    } catch (error) {
+      // Handle any errors here
+      console.error('Error:', error);
+    }
   };
 
   return (
     <FormContainer>
       <MainTitle>Create Product</MainTitle>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} encType="multipart/form-data">
         <FormGroup>
           <LabelStyle>Product Name</LabelStyle>
           <InputStyle
@@ -229,18 +242,32 @@ export const AddProductForm = () => {
           <ImageUploadContainer>
             <ImageUploadInput
               type="file"
-              // name="banner"
+              accept="image/*"
+              multiple
+              name="imageData"
               onChange={handleImageChange}
               required
+              ref={imageInputRef}
             />
           </ImageUploadContainer>
         </FormGroup>
+        <div className="image-container">
+          {imageDataShow &&
+            imageDataShow.map((imageData, index) => (
+              <img
+                key={index}
+                src={imageData}
+                alt={`Selected Image ${index + 1}`}
+                style={{ maxWidth: '100px' }}
+              />
+            ))}
+        </div>
         {/* <FormGroup>
           <LabelStyle>Product Image Url</LabelStyle>
           <InputStyle
             type="text"
-            name="banner"
-            value={formData.banner}
+            name="imageData"
+            value={formData.imageData}
             onChange={handleChange}
             required
           />
@@ -275,14 +302,18 @@ export const AddProductForm = () => {
           />
         </FormGroup>
         <FormGroup>
-          <LabelStyle>Suplier</LabelStyle>
-          <InputStyle
-            type="text"
-            name="suplier"
-            value={formData.suplier}
+          <LabelStyle>
+            Active (customer only can search when the product is active)
+          </LabelStyle>
+          <InputStyleSelect
+            name="active"
+            value={formData.active}
             onChange={handleChange}
             required
-          />
+          >
+            <option value="true">Active</option>
+            <option value="false">Inactive</option>
+          </InputStyleSelect>
         </FormGroup>
         <div tw="my-8">
           <AddAddressButton type="submit">
