@@ -19,8 +19,11 @@ export const ProductCardList = ({ type }) => {
   const products = productCategoryQuery?.data;
   const wishlistProducts = wishlistQuery?.data;
 
-  const wishlistIdArray = wishlistQuery?.data?.map((obj) => obj._id);
-
+  const wishlistIdArray = Array.isArray(wishlistQuery?.data)
+    ? wishlistQuery.data.map((obj) => obj._id)
+    : [];
+  // const wishlistIdArray = wishlistQuery?.data && wishlistQuery?.data?.map((obj) => obj._id);
+  console.log(wishlistQuery);
   return (
     <>
       <div tw="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">

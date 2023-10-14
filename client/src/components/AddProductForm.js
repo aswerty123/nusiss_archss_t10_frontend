@@ -19,33 +19,18 @@ const ImageUploadContainer = tw.div`mt-2 flex items-center`;
 const ImageUploadInput = tw.input`mt-1 p-2 w-full border rounded-md`;
 
 export const AddProductForm = () => {
-  /* New Product Create Request Body
-{
-        name: '',
-        description: '',
-        category_type: '',
-        imageData: [{
-            data: '',
-            contentType:""
-        }],
-        quantity: '',
-        price: '',
-        active: ''
-      }
-*/
   const [formData, setFormData] = useState({
     name: '',
-    desc: '',
-    type: '',
+    description: '',
+    category_type: '',
     imageData: '',
-    unit: '',
+    quantity: '',
     price: '',
-    available: false,
     active: true,
   });
 
-  const [imageDataShow, setImageData] = useState(''); // State to store the Base64-encoded image
-  const imageInputRef = React.useRef(); //user to reset image after submit
+  // const [imageDataShow, setImageData] = useState(''); // State to store the Base64-encoded image
+  // const imageInputRef = React.useRef(); //user to reset image after submit
   const createProductMutation = useCreateProductMutation();
 
   // const handleImageChange = (e) => {
@@ -65,33 +50,35 @@ export const AddProductForm = () => {
   // };
 
   const handleImageChange = (e) => {
-    const files = e.target.files; // Get an array of selected files
-    console.log(files);
-    if (files.length > 0) {
-      const base64Images = [];
+    const file = e.target.files[0];
+    var quality = 1.0;
+    const finalImageSize = 60000;
+    const fileSizeInBytes = file.size;
 
-      // Loop through each selected file and convert it to Base64
-      for (let i = 0; i < files.length; i++) {
+    if (fileSizeInBytes > finalImageSize) {
+      quality = finalImageSize / fileSizeInBytes;
+    }
+
+    console.log(`File size: ${fileSizeInBytes} bytes`);
+
+    new Compressor(file, {
+      quality: quality,
+      success: (result) => {
         const reader = new FileReader();
 
-        reader.onload = (event) => {
-          // When the file is loaded, convert it to Base64
-          const base64Image = event.target.result;
-          base64Images.push(base64Image);
-
-          // If we have processed all files, update the state
-          if (base64Images.length === files.length) {
-            setImageData(base64Images);
-          }
+        reader.onloadend = () => {
+          setFormData((prevFormData) => ({
+            ...prevFormData,
+            imageData: reader.result,
+          }));
         };
 
-        reader.readAsDataURL(files[i]); // Read the file as a data URL (Base64)
-      }
-    }
-    setFormData((prevFormData) => ({
-      ...prevFormData,
-      imageData: files,
-    }));
+        reader.readAsDataURL(result);
+      },
+      error: (err) => {
+        console.log(err.message);
+      },
+    });
   };
 
   // const handleImageChange = (e) => {
@@ -165,36 +152,26 @@ export const AddProductForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const formDataToSubmit = {
+    createProductMutation.mutate({
       name: formData.name,
-      desc: formData.desc,
-      type: formData.type,
+      description: formData.description,
+      category_type: formData.category_type,
       imageData: formData.imageData,
-      unit: formData.unit,
+      quantity: formData.quantity,
       price: formData.price,
-      available: formData.available,
       active: formData.active,
-    };
+    });
 
-    try {
-      await createProductMutation.mutateAsync(formDataToSubmit); // Use mutateAsync to await the mutation
-      // Reset the form and clear the input value
-      setFormData({
-        name: '',
-        desc: '',
-        type: '',
-        imageData: '',
-        unit: '',
-        price: '',
-        available: false,
-        active: true,
-      });
-      imageInputRef.current.value = ''; // Reset the input field
-      setImageData(''); // Clear the displayed images
-    } catch (error) {
-      // Handle any errors here
-      console.error('Error:', error);
-    }
+    // Reset the form and clear the input value
+    setFormData({
+      name: '',
+      description: '',
+      category_type: '',
+      imageData: '',
+      quantity: '',
+      price: '',
+      active: true,
+    });
   };
 
   return (
@@ -215,8 +192,8 @@ export const AddProductForm = () => {
           <LabelStyle>Product Description</LabelStyle>
           <InputStyle
             type="text"
-            name="desc"
-            value={formData.desc}
+            name="description"
+            value={formData.description}
             onChange={handleChange}
             required
           />
@@ -225,8 +202,8 @@ export const AddProductForm = () => {
           <LabelStyle>Product Type</LabelStyle>
           <InputStyle
             type="text"
-            name="type"
-            value={formData.type}
+            name="category_type"
+            value={formData.category_type}
             onChange={handleChange}
             required
           />
@@ -243,24 +220,20 @@ export const AddProductForm = () => {
             <ImageUploadInput
               type="file"
               accept="image/*"
-              multiple
               name="imageData"
               onChange={handleImageChange}
               required
-              ref={imageInputRef}
             />
           </ImageUploadContainer>
         </FormGroup>
         <div className="image-container">
-          {imageDataShow &&
-            imageDataShow.map((imageData, index) => (
-              <img
-                key={index}
-                src={imageData}
-                alt={`Selected Image ${index + 1}`}
-                style={{ maxWidth: '100px' }}
-              />
-            ))}
+          {formData.imageData && (
+            <img
+              src={formData.imageData}
+              alt={`Selected Img ${formData.name}`}
+              style={{ maxWidth: '100px' }}
+            />
+          )}
         </div>
         {/* <FormGroup>
           <LabelStyle>Product Image Url</LabelStyle>
@@ -276,8 +249,8 @@ export const AddProductForm = () => {
           <LabelStyle>Quantity</LabelStyle>
           <InputStyle
             type="number"
-            name="unit"
-            value={formData.unit}
+            name="quantity"
+            value={formData.quantity}
             onChange={handleChange}
             required
           />
@@ -292,7 +265,7 @@ export const AddProductForm = () => {
             required
           />
         </FormGroup>
-        <FormGroup>
+        {/* <FormGroup>
           <LabelStyle>Availability</LabelStyle>
           <InputStyle
             type="checkbox"
@@ -300,7 +273,7 @@ export const AddProductForm = () => {
             checked={formData.available}
             onChange={handleChange}
           />
-        </FormGroup>
+        </FormGroup> */}
         <FormGroup>
           <LabelStyle>
             Active (customer only can search when the product is active)

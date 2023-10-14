@@ -5,33 +5,49 @@ export function useCreateProductMutation() {
   const queryClient = useQueryClient();
 
   const createProductMutation = useMutation(
-    async ({ name, desc, type, imageData, unit, price, available, active }) => {
+    async ({
+      name,
+      description,
+      category_type,
+      imageData,
+      quantity,
+      price,
+      active,
+    }) => {
       // Create a FormData object and append the file
-      let formData = new FormData();
-      formData.append('user_id', 'dummy_id');
-      formData.append('name', name);
-      formData.append('description', desc);
-      formData.append('category_type', type);
-      formData.append('quantity', unit);
-      formData.append('price', price);
-      formData.append('active', active);
-      formData.append('imageData', imageData);
-      // Check if imageData is a single file or a FileList
-      if (imageData instanceof FileList) {
-        // If it's a FileList, append all files under the same key
-        for (let i = 0; i < imageData.length; i++) {
-          formData.append('imageData', imageData[i]);
-        }
-      } else if (imageData instanceof File) {
-        // If it's a single File, append it directly under the key "imageData"
-        formData.append('imageData', imageData);
-      }
-      // to log the form data
-      // for (const [key, value] of formData.entries()) {
-      //   console.log(`${key}: ${value}`);
+      // let formData = new FormData();
+      // formData.append('user_id', 'dummy_id');
+      // formData.append('name', name);
+      // formData.append('description', desc);
+      // formData.append('category_type', type);
+      // formData.append('quantity', unit);
+      // formData.append('price', price);
+      // formData.append('active', active);
+      // formData.append('imageData', imageData);
+      // // Check if imageData is a single file or a FileList
+      // if (imageData instanceof FileList) {
+      //   // If it's a FileList, append all files under the same key
+      //   for (let i = 0; i < imageData.length; i++) {
+      //     formData.append('imageData', imageData[i]);
+      //   }
+      // } else if (imageData instanceof File) {
+      //   // If it's a single File, append it directly under the key "imageData"
+      //   formData.append('imageData', imageData);
       // }
+      // // to log the form data
+      // // for (const [key, value] of formData.entries()) {
+      // //   console.log(`${key}: ${value}`);
+      // // }
 
-      const response = await PostData('product/create', formData);
+      const response = await PostData('product/create', {
+        name,
+        description,
+        category_type,
+        imageData,
+        quantity,
+        price,
+        active,
+      });
       return response.data;
     },
     {
@@ -51,7 +67,7 @@ export function useProductCategoryQuery(type) {
   const productCategoryQuery = useQuery({
     queryKey: ['product', type],
     queryFn: async () => {
-      const response = await GetData(`products/category/${type}`);
+      const response = await GetData(`product/category/${type}`);
       return response.data;
     },
   });
@@ -63,7 +79,7 @@ export function useProductIdQuery(id) {
   const productIdQuery = useQuery({
     queryKey: ['product', id],
     queryFn: async () => {
-      const response = await GetData(`products/${id}`);
+      const response = await GetData(`product/${id}`);
       return response.data;
     },
   });
@@ -76,7 +92,7 @@ export function useGetProductsByIdsArrayMutation() {
 
   const getProductsByIdsArrayMutation = useMutation(
     async ({ ids }) => {
-      const response = await PostData('products/ids', { ids });
+      const response = await PostData('product/ids', { ids });
       return response.data;
     },
     {
@@ -101,7 +117,7 @@ export function useAllProductsQuery() {
   const allProductsQuery = useQuery({
     queryKey: ['product'],
     queryFn: async () => {
-      const response = await GetData('products/');
+      const response = await GetData('product/');
       return response.data;
     },
   });
@@ -114,7 +130,7 @@ export function useDeleteProductMutation() {
 
   const deleteProfileMutation = useMutation(
     async (id) => {
-      const response = await DeleteData(`products/${id}`);
+      const response = await DeleteData(`product/${id}`);
       return response.data;
     },
     {

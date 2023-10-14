@@ -10,7 +10,13 @@ import { BsFillTrashFill } from 'react-icons/bs';
 import tw, { styled } from 'twin.macro';
 import { useAuth } from '../context/AuthContext';
 
-import { useAddToCartMutation, useAddToWishlistMutation, useCartQuery, useDeleteFromWishlistMutation, useWishlistQuery } from '../queries/shopping-queries';
+import {
+  useAddToCartMutation,
+  useAddToWishlistMutation,
+  useCartQuery,
+  useDeleteFromWishlistMutation,
+  useWishlistQuery,
+} from '../queries/shopping-queries';
 
 const CardContainer = tw.div`border border-gray-200 rounded-lg overflow-hidden relative`;
 const CardImage = tw.div`w-full h-32 bg-center bg-no-repeat relative`;
@@ -30,12 +36,18 @@ export const ProductCard = ({ product, wishlistIdArray }) => {
   const deleteProductMutation = useDeleteProductMutation();
   const addToWishlistMutation = useAddToWishlistMutation();
   const deleteFromWishlistMutation = useDeleteFromWishlistMutation();
-  const { _id, name, desc, price, imageData, quantity, type } = product;
+  const {
+    _id,
+    user_id,
+    name,
+    description,
+    category_type,
+    imageData,
+    quantity,
+    price,
+    active,
+  } = product;
   const available = quantity > 0 ? true : false;
-  const imageBuffer = Buffer.from(imageData[0].data);
-  const banner = `data:${imageData.contentType};base64,${imageBuffer.toString(
-    'base64'
-  )}`;
 
   const handleChangeImageFormat = (e) => {
     e.preventDefault();
@@ -53,7 +65,6 @@ export const ProductCard = ({ product, wishlistIdArray }) => {
     deleteFromWishlistMutation.mutate({ id: product._id });
   };
 
-
   const handleDelete = (e) => {
     e.preventDefault();
     deleteProductMutation.mutate(product._id);
@@ -67,7 +78,7 @@ export const ProductCard = ({ product, wishlistIdArray }) => {
         <a href={`/product-details/${_id}`}>
           <CardImage
             style={{
-              backgroundImage: `url('${banner}')`,
+              backgroundImage: `url('${imageData}')`,
               backgroundColor: 'gray',
               backgroundSize: imageFormat ? 'contain' : 'cover',
             }}
@@ -88,29 +99,25 @@ export const ProductCard = ({ product, wishlistIdArray }) => {
         )}
 
         <CardContentContainer>
-          {authData ? (
-            authData?.role === 'seller' ? (
-              ''
-            ) : wishlistIdArray?.includes(product._id) ? (
-              <HeartIcon>
-                <AiFillHeart
-                  size={30}
-                  tw="text-red-500 hover:text-red-600"
-                  onClick={handleRemoveFromWishlist}
-                />
-              </HeartIcon>
-            ) : (
-              <HeartIcon>
-                <AiOutlineHeart
-                  size={30}
-                  tw="hover:text-red-600"
-                  onClick={handleAddToWishlist}
-                />
-              </HeartIcon>
-            )
-          ) : (
+          {authData&&(authData?.role === 'seller' ? (
             ''
-          )}
+          ) : wishlistIdArray?.includes(product._id) ? (
+            <HeartIcon>
+              <AiFillHeart
+                size={30}
+                tw="text-red-500 hover:text-red-600"
+                onClick={handleRemoveFromWishlist}
+              />
+            </HeartIcon>
+          ) : (
+            <HeartIcon>
+              <AiOutlineHeart
+                size={30}
+                tw="hover:text-red-600"
+                onClick={handleAddToWishlist}
+              />
+            </HeartIcon>
+          ))}
 
           <a
             href={`/product-details/${_id}`}
@@ -118,14 +125,13 @@ export const ProductCard = ({ product, wishlistIdArray }) => {
           >
             {name}
           </a>
-          <p tw="text-gray-600 text-sm mb-4">{desc}</p>
+          <p tw="text-gray-600 text-sm mb-4">{description}</p>
           <div tw="flex items-center justify-between">
             <span tw="text-gray-500 text-sm">(${price})</span>
           </div>
         </CardContentContainer>
 
         <div tw="flex items-center mt-2 space-x-2 justify-end p-2 relative">
-
           {authData ? (
             authData?.role === 'seller' ? (
               <CardButton
@@ -135,14 +141,11 @@ export const ProductCard = ({ product, wishlistIdArray }) => {
                 Delete
               </CardButton>
             ) : (
-              <CardButton tw="bg-blue-500 hover:bg-blue-600">
-                Add to Cart
-              </CardButton>
+              ''
             )
           ) : (
             ''
           )}
-
         </div>
       </CardContainer>
     </>

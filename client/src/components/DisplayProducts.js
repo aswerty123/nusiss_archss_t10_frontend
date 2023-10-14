@@ -29,7 +29,11 @@ export const DisplayProducts = () => {
         <DisplayTitle>Product List</DisplayTitle>
         <ButtonGroup>
           <TagButton onClick={() => setType('All')}>All</TagButton>
-          {authData?<TagButton onClick={() => setType('WishList')}>WishList</TagButton>:""}
+          {authData?.role === 'buyer' ? (
+            <TagButton onClick={() => setType('WishList')}>WishList</TagButton>
+          ) : (
+            ''
+          )}
           {/* Render filter options based on categories */}
           {categories?.map((category) => (
             <TagButton

@@ -42,7 +42,9 @@ export const ProductDetails = () => {
   const addToCartMutation = useAddToCartMutation();
   const cartQuery = useCartQuery();
 
-  const wishlistIdArray = wishlistQuery?.data?.map((obj) => obj._id);
+  const wishlistIdArray = Array.isArray(wishlistQuery?.data)
+    ? wishlistQuery.data.map((obj) => obj._id)
+    : [];
 
   const { _id, name, desc, type, unit, price, available, suplier, banner } =
     productIdQuery?.data || {};
@@ -168,7 +170,7 @@ export const ProductDetails = () => {
             {authData ? (
               authData?.role === 'buyer' ? (
                 <>
-                  <BlueLongButton onClick={handleAddToCart} >
+                  <BlueLongButton onClick={handleAddToCart}>
                     <FaShoppingCart size={20} tw="mr-2" /> Add to Cart
                   </BlueLongButton>
 
