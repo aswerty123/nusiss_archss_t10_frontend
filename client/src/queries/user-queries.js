@@ -1,13 +1,10 @@
-import { useNavigate } from 'react-router-dom';
 import { DeleteData, GetData, PostData, SetAuthToken } from '../utils';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 
 export function useSignUpMutation() {
   const queryClient = useQueryClient();
-  const navigate = useNavigate();
 
   const signUpMutation = useMutation(
-    // Pass an async function to `mutationFn`
     async ({ email, password, phone, role }) => {
       const response = await PostData('customer/signup', {
         email,
@@ -15,7 +12,7 @@ export function useSignUpMutation() {
         phone,
         role,
       });
-      return response.data; // Return the response data to be used in `onSuccess` and handle errors
+      return response.data;
     },
     {
       onSuccess: (data) => {
@@ -23,8 +20,7 @@ export function useSignUpMutation() {
         queryClient.setQueryData(['login'], data);
         console.log('useSignUpMutation', data);
         SetAuthToken(data);
-        window.location.reload();
-        navigate('/home');
+        window.location.href = '/home';
       },
     }
   );
@@ -34,7 +30,6 @@ export function useSignUpMutation() {
 
 export function useLoginMutation() {
   const queryClient = useQueryClient();
-  const navigate = useNavigate();
 
   const loginMutation = useMutation(
     async ({ email, password }) => {
@@ -50,8 +45,7 @@ export function useLoginMutation() {
         queryClient.setQueryData(['login'], data);
         console.log('useLoginMutation:', data);
         SetAuthToken(data);
-        window.location.reload();
-        navigate('/home');
+        window.location.href = '/home';
       },
     }
   );

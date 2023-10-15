@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
-import { BsFillBoxSeamFill, BsPersonCircle } from 'react-icons/bs';
+import { BsPersonCircle } from 'react-icons/bs';
 import { BiSearchAlt2, BiLogIn, BiLogOut } from 'react-icons/bi';
 import { IoReceiptOutline } from 'react-icons/io5';
 import {
   AiOutlineShoppingCart,
-  AiOutlineHeart,
   AiFillShop,
   AiOutlineUserSwitch,
 } from 'react-icons/ai';
@@ -19,7 +18,7 @@ const HeaderComponent = tw.nav`mx-auto relative flex h-16 items-center justify-b
 const RightSideContainer = tw.div`absolute inset-y-0 right-5 flex items-center pr-2 space-x-4`;
 const LeftSideContainer = tw.div`absolute inset-y-0 left-5 flex items-center pl-2`;
 const Item = tw.div`relative ml-3 flex cursor-pointer items-center py-2 px-2 hover:bg-gray-100`;
-const IconText = tw.span`font-medium hidden xl:inline-block`
+const IconText = tw.span`font-medium hidden xl:inline-block`;
 
 export const Header = () => {
   const navigate = useNavigate();
@@ -40,7 +39,7 @@ export const Header = () => {
   return (
     <HeaderComponent>
       <LeftSideContainer>
-        <Link to={authData?"/home":"/"}>
+        <Link to={authData ? '/home' : '/'}>
           <div tw="flex items-center">
             <AiFillShop tw="h-10 w-10" />
             <span tw="font-medium text-3xl ml-2">The MarketPlace</span>
@@ -70,9 +69,7 @@ export const Header = () => {
               </Item>{' '}
               <Item onClick={handleSwitchUserRole}>
                 <AiOutlineUserSwitch tw="h-8 w-8 text-blue-500" />
-                <IconText tw="text-blue-500 ">
-                  Buyer
-                </IconText>
+                <IconText tw="text-blue-500 ">Buyer</IconText>
               </Item>
             </>
           ) : (
@@ -83,35 +80,13 @@ export const Header = () => {
               </Item>
               <Item onClick={handleSwitchUserRole}>
                 <AiOutlineUserSwitch tw="h-8 w-8 text-red-500" />
-                <IconText tw="text-red-500">
-                  Seller
-                </IconText>
+                <IconText tw="text-red-500">Seller</IconText>
               </Item>
             </>
           )
         ) : (
           ''
         )}
-        {/* <Item onClick={() => navigate('/search')}>
-          <BiSearchAlt2 tw="h-8 w-8" />
-          <span tw="font-medium hidden xl:inline-block">Search</span>
-        </Item>
-        <Item onClick={() => navigate('/create-product')}>
-          <ImBoxAdd tw="h-6 w-8" />
-          <span tw="font-medium hidden xl:inline-block">Product</span>
-        </Item>
-        <Item>
-          <IoReceiptOutline tw="h-6 w-8" />
-          <span tw="font-medium hidden xl:inline-block">Order</span>
-        </Item>
-        <Item>
-          <AiOutlineHeart tw="h-6 w-8" />
-          <span tw="font-medium hidden xl:inline-block">WishList</span>
-        </Item>
-        <Item onClick={() => navigate('/test')}>
-          <AiOutlineShoppingCart tw="h-6 w-8" />
-          <span tw="font-medium hidden xl:inline-block">Cart</span>
-        </Item> */}
         {authData ? (
           <>
             <Item onClick={() => navigate('/profile')}>

@@ -1,12 +1,10 @@
 import React, { useState } from 'react';
-import { useMutation } from '@tanstack/react-query';
-import { PostData } from '../utils';
 import { useCreateProductMutation } from '../queries/product-queries';
 import { AiOutlinePlus } from 'react-icons/ai';
 import Compressor from 'compressorjs';
 
 /** @jsxImportSource @emotion/react */
-import tw, { styled } from 'twin.macro';
+import tw from 'twin.macro';
 
 const FormContainer = tw.div`mx-auto w-1/3 max-w-md mx-auto bg-white p-6 rounded-md shadow-md`;
 const FormGroup = tw.div`grid grid-cols-1 gap-0.5 mt-2`;
@@ -29,37 +27,17 @@ export const AddProductForm = () => {
     active: true,
   });
 
-  // const [imageDataShow, setImageData] = useState(''); // State to store the Base64-encoded image
-  // const imageInputRef = React.useRef(); //user to reset image after submit
   const createProductMutation = useCreateProductMutation();
-
-  // const handleImageChange = (e) => {
-  //   const file = e.target.files[0];
-  //   const reader = new FileReader();
-
-  //   reader.onloadend = () => {
-  //     setFormData((prevFormData) => ({
-  //       ...prevFormData,
-  //       banner: reader.result,
-  //     }));
-  //   };
-
-  //   if (file) {
-  //     reader.readAsDataURL(file);
-  //   }
-  // };
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     var quality = 1.0;
-    const finalImageSize = 60000;
+    const finalImageSize = 50000;
     const fileSizeInBytes = file.size;
 
     if (fileSizeInBytes > finalImageSize) {
       quality = finalImageSize / fileSizeInBytes;
     }
-
-    console.log(`File size: ${fileSizeInBytes} bytes`);
 
     new Compressor(file, {
       quality: quality,
@@ -81,74 +59,12 @@ export const AddProductForm = () => {
     });
   };
 
-  // const handleImageChange = (e) => {
-  //   const file = e.target.files[0];
-  //   const reader = new FileReader();
-
-  //   reader.onloadend = () => {
-  //     const binaryString = atob(reader.result.split(',')[1]); // Extract base64 data
-  //     const binaryData = new Uint8Array(binaryString.length);
-  //     for (let i = 0; i < binaryString.length; i++) {
-  //       binaryData[i] = binaryString.charCodeAt(i);
-  //     }
-
-  //     // Compress the binary data using pako
-  //     const compressedData = pako.deflate(binaryData, { to: 'string' });
-
-  //     // Set the compressed base64 data directly
-  //     setFormData((prevFormData) => ({
-  //       ...prevFormData,
-  //       banner: btoa(compressedData),
-  //     }));
-  //   };
-
-  //   if (file) {
-  //     reader.readAsDataURL(file);
-  //   }
-  // };
-
-  // const handleImageChange = (e) => {
-  //   const files = e.target.files;
-  //   const imageFiles = Array.from(files).map((file) => {
-  //     const reader = new FileReader();
-  //     reader.readAsDataURL(file);
-  //     return new Promise((resolve) => {
-  //       reader.onloadend = () => {
-  //         resolve({
-  //           data: reader.result,
-  //           contentType: file.type,
-  //         });
-  //       };
-  //     });
-  //   });
-
-  //   Promise.all(imageFiles).then((images) => {
-  //     setFormData((prevFormData) => ({
-  //       ...prevFormData,
-  //       images,
-  //     }));
-  //   });
-  // };
-
   const handleChange = (e) => {
-    // const { name, value, type, checked } = e.target;
-
-    // setFormData((prevFormData) => ({
-    //   ...prevFormData,
-    //   [name]: type === 'checkbox' ? checked : value,
-    // }));
     setFormData((prevFormData) => ({
       ...prevFormData,
       [e.target.name]: e.target.value,
     }));
   };
-
-  // const handleChange = (e) => {
-  //   setFormData((prevFormData) => ({
-  //     ...prevFormData,
-  //     [e.target.name]: e.target.value,
-  //   }));
-  // };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -177,7 +93,7 @@ export const AddProductForm = () => {
   return (
     <FormContainer>
       <MainTitle>Create Product</MainTitle>
-      <form onSubmit={handleSubmit} encType="multipart/form-data">
+      <form onSubmit={handleSubmit}>
         <FormGroup>
           <LabelStyle>Product Name</LabelStyle>
           <InputStyle
@@ -208,12 +124,6 @@ export const AddProductForm = () => {
             required
           />
         </FormGroup>
-        {/* <FormGroup>
-          <LabelStyle>Product Images</LabelStyle>
-          <ImageUploadContainer>
-            <ImageUploadInput type="file" onChange={handleImageChange} multiple required />
-          </ImageUploadContainer>
-        </FormGroup> */}
         <FormGroup>
           <LabelStyle>Product Images</LabelStyle>
           <ImageUploadContainer>
@@ -235,16 +145,6 @@ export const AddProductForm = () => {
             />
           )}
         </div>
-        {/* <FormGroup>
-          <LabelStyle>Product Image Url</LabelStyle>
-          <InputStyle
-            type="text"
-            name="imageData"
-            value={formData.imageData}
-            onChange={handleChange}
-            required
-          />
-        </FormGroup> */}
         <FormGroup>
           <LabelStyle>Quantity</LabelStyle>
           <InputStyle
@@ -265,15 +165,6 @@ export const AddProductForm = () => {
             required
           />
         </FormGroup>
-        {/* <FormGroup>
-          <LabelStyle>Availability</LabelStyle>
-          <InputStyle
-            type="checkbox"
-            name="available"
-            checked={formData.available}
-            onChange={handleChange}
-          />
-        </FormGroup> */}
         <FormGroup>
           <LabelStyle>
             Active (customer only can search when the product is active)

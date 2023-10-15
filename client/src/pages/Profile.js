@@ -3,7 +3,7 @@ import { ProfileDetails } from '../components/ProfileDetails';
 import { AddAddressForm } from '../components/AddAddressForm';
 
 /** @jsxImportSource @emotion/react */
-import tw, { styled } from 'twin.macro';
+import tw from 'twin.macro';
 const LoginFormContainer = tw.div`flex justify-between`;
 
 export const Profile = () => {
@@ -11,7 +11,6 @@ export const Profile = () => {
     <>
       <LoginFormContainer>
         <ProfileDetails />
-        {/* <ProfileDetails /> */}
         <AddAddressForm />
       </LoginFormContainer>
     </>

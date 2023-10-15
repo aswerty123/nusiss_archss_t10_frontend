@@ -1,10 +1,13 @@
 import React from 'react';
-import { useCartQuery,useCreateOrderMutation,useDeleteFromCartMutation } from '../queries/shopping-queries';
+import {
+  useCartQuery,
+  useCreateOrderMutation,
+  useDeleteFromCartMutation,
+} from '../queries/shopping-queries';
+import { useNavigate } from 'react-router-dom';
 
 /** @jsxImportSource @emotion/react */
 import tw from 'twin.macro';
-import { useAllProductsQuery } from '../queries/product-queries';
-import { useNavigate } from 'react-router-dom';
 
 const ApiTestContainer = tw.div`container mx-auto p-8`;
 const ApiTestHeader = tw.div`text-3xl font-bold mb-6`;
@@ -14,8 +17,7 @@ const BlueButton = tw.div`bg-blue-500 hover:bg-blue-700 text-white font-bold py-
 const RedButton = tw.div`bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 mt-4 rounded`;
 
 export const CartDetails = () => {
-
-    const navigate = useNavigate();
+  const navigate = useNavigate();
 
   const cartQuery = useCartQuery();
   const deleteFromCartMutation = useDeleteFromCartMutation();
@@ -25,9 +27,7 @@ export const CartDetails = () => {
     e.preventDefault();
     createOrderMutation.mutate();
     navigate('/order-list');
-
-  }
-
+  };
 
   const handleRemoveFromCart = (id) => {
     deleteFromCartMutation.mutate({ id });
@@ -46,10 +46,18 @@ export const CartDetails = () => {
           </div>
         )}
         <ApiTestButtonContainer>
-          <BlueButton onClick={handleCreateOrder}>Checkout (Post Order Api)</BlueButton>
-          {cartQuery && cartQuery.data?.items?.map((item)=>(
-            <RedButton key={item._id} onClick={() => handleRemoveFromCart(item.product._id)}>Delete {item.product.name}</RedButton>
-          )) }
+          <BlueButton onClick={handleCreateOrder}>
+            Checkout (Post Order Api)
+          </BlueButton>
+          {cartQuery &&
+            cartQuery.data?.items?.map((item) => (
+              <RedButton
+                key={item._id}
+                onClick={() => handleRemoveFromCart(item.product._id)}
+              >
+                Delete {item.product.name}
+              </RedButton>
+            ))}
         </ApiTestButtonContainer>
       </ApiTestContentContainer>
     </ApiTestContainer>

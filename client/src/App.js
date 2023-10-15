@@ -1,30 +1,20 @@
-import {
-  BrowserRouter as Router,
-  Routes,
-  Route,
-  Navigate,
-} from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
 import { Header } from './components/Header';
 import { Login } from './pages/Login';
 import { PrivateRoutes } from './utils/PrivateRoutes';
 import { Home } from './pages/Home';
-import { ProfileDetails } from './components/ProfileDetails';
-import { AuthProvider } from './context/AuthContext';
 import { useAuth } from './context/AuthContext';
-import { useEffect } from 'react';
-import { ProtectedRoute } from './utils/ProtectedRoute';
 import { Profile } from './pages/Profile';
-import { TestComponent } from './components/TestComponent';
 import { CreateProduct } from './pages/CreateProduct';
-import { TestBuyer } from './components/TestBuyer';
-import { TestSeller } from './components/TestSeller';
 import { ProductDetails } from './pages/ProductDetails';
 import { SearchItem } from './pages/SearchItem';
 import { Landing } from './pages/Landing';
 import { CartDetails } from './pages/CartDetails';
 import { OrderDetails } from './pages/OrderDetails';
 import { OrderList } from './pages/OrderList';
-// import { PrivateRoutes } from './utils/PrivateRoutes';
+import { PageNotFound } from './components/PageNotFound';
+import { RedirectBuyer } from './components/RedirectBuyer';
+import { RedirectSeller } from './components/RedirectSeller';
 
 function App() {
   const { authData } = useAuth();
@@ -34,10 +24,12 @@ function App() {
       <Header />
       <Routes>
         <Route path="/login" element={<Login />} />
-        <Route path="/test" element={<TestComponent />} />
         <Route path="/search" element={<SearchItem />} />
         <Route path="/" element={<Landing />} />
         <Route path="/product-details/:id" element={<ProductDetails />} />
+        <Route path="/redirect-buyer" element={<RedirectBuyer />} />
+        <Route path="/redirect-seller" element={<RedirectSeller />} />
+        <Route path="*" element={<PageNotFound />} />
         <Route
           element={
             <PrivateRoutes redirectPath="/login" isAllowed={!!authData} />
@@ -45,17 +37,15 @@ function App() {
         >
           <Route path="/home" element={<Home />} />
           <Route path="/profile" element={<Profile />} />
-
         </Route>
         <Route
           element={
             <PrivateRoutes
-            redirectPath="/test-buyer"
-            isAllowed={!!authData && authData.role === 'buyer'}
+              redirectPath="/redirect-seller"
+              isAllowed={!!authData && authData.role === 'buyer'}
             />
           }
         >
-          <Route path="/test-buyer" element={<TestBuyer />} />
           <Route path="/cart" element={<CartDetails />} />
           <Route path="/order/:id" element={<OrderDetails />} />
           <Route path="/order-list" element={<OrderList />} />
@@ -63,16 +53,14 @@ function App() {
         <Route
           element={
             <PrivateRoutes
-            redirectPath="/test-seller"
-            isAllowed={!!authData && authData.role === 'seller'}
+              redirectPath="/redirect-buyer"
+              isAllowed={!!authData && authData.role === 'seller'}
             />
           }
         >
-          <Route path="/test-seller" element={<TestSeller />} />
           <Route path="/create-product" element={<CreateProduct />} />
         </Route>
       </Routes>
-      
     </>
   );
 }

@@ -1,4 +1,4 @@
-import { DeleteData, GetData, PostData, SetAuthToken } from '../utils';
+import { DeleteData, GetData, PostData } from '../utils';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 
 //===================================================== Cart
@@ -14,7 +14,6 @@ export function useAddToCartMutation() {
     {
       onSuccess: (data) => {
         queryClient.invalidateQueries(['cart']);
-        //   queryClient.setQueryData(['cart'], data);
         console.log('addToCartMutation:', data);
       },
     }
@@ -34,7 +33,6 @@ export function useDeleteFromCartMutation() {
     {
       onSuccess: (data) => {
         queryClient.invalidateQueries(['cart']);
-        //   queryClient.setQueryData(['cart'], data);
         console.log('deleteFromCartMutation:', data);
       },
     }
@@ -68,7 +66,6 @@ export function useAddToWishlistMutation() {
     {
       onSuccess: (data) => {
         queryClient.invalidateQueries(['wishlist']);
-        //   queryClient.setQueryData(['cart'], data);
         console.log('addToWishlistMutation:', data);
       },
     }
@@ -88,7 +85,6 @@ export function useDeleteFromWishlistMutation() {
     {
       onSuccess: (data) => {
         queryClient.invalidateQueries(['wishlist']);
-        //   queryClient.setQueryData(['cart'], data);
         console.log('deleteFromCartMutation:', data);
       },
     }

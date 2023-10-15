@@ -1,4 +1,4 @@
-import { DeleteData, GetData, PostData, SetAuthToken } from '../utils';
+import { DeleteData, GetData, PostData } from '../utils';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 
 export function useCreateProductMutation() {
@@ -14,31 +14,6 @@ export function useCreateProductMutation() {
       price,
       active,
     }) => {
-      // Create a FormData object and append the file
-      // let formData = new FormData();
-      // formData.append('user_id', 'dummy_id');
-      // formData.append('name', name);
-      // formData.append('description', desc);
-      // formData.append('category_type', type);
-      // formData.append('quantity', unit);
-      // formData.append('price', price);
-      // formData.append('active', active);
-      // formData.append('imageData', imageData);
-      // // Check if imageData is a single file or a FileList
-      // if (imageData instanceof FileList) {
-      //   // If it's a FileList, append all files under the same key
-      //   for (let i = 0; i < imageData.length; i++) {
-      //     formData.append('imageData', imageData[i]);
-      //   }
-      // } else if (imageData instanceof File) {
-      //   // If it's a single File, append it directly under the key "imageData"
-      //   formData.append('imageData', imageData);
-      // }
-      // // to log the form data
-      // // for (const [key, value] of formData.entries()) {
-      // //   console.log(`${key}: ${value}`);
-      // // }
-
       const response = await PostData('product/create', {
         name,
         description,
@@ -53,7 +28,6 @@ export function useCreateProductMutation() {
     {
       onSuccess: (data) => {
         queryClient.invalidateQueries(['product']);
-        // queryClient.invalidateQueries(['product', data._id], { exact: true });
         queryClient.setQueryData(['product', data._id], data);
         console.log('useCreateProductMutation:', data);
       },
@@ -104,7 +78,6 @@ export function useGetProductsByIdsArrayMutation() {
           });
           queryClient.setQueryData(['product', product._id], product);
         });
-        // queryClient.invalidateQueries(['product', data], { exact: true });
         console.log('useGetProductsByIdsArrayMutation:', idArray);
       },
     }
@@ -142,4 +115,24 @@ export function useDeleteProductMutation() {
   );
 
   return deleteProfileMutation;
+}
+
+export function useToggleProductActiveStateMutation() {
+  const queryClient = useQueryClient();
+
+  const toggleProductActiveStateMutation = useMutation(
+    async (id) => {
+      const response = await PostData(`product/toggleactive/${id}`);
+      return response.data;
+    },
+    {
+      onSuccess: (data) => {
+        queryClient.invalidateQueries(['product']);
+        queryClient.setQueryData(['product', data._id], data);
+        console.log('toggleProductActiveStateMutation:', data);
+      },
+    }
+  );
+
+  return toggleProductActiveStateMutation;
 }

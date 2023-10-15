@@ -1,6 +1,4 @@
 import React from 'react';
-import 'tailwindcss/tailwind.css';
-
 import { AiFillDelete } from 'react-icons/ai';
 import {
   useProfileQuery,
@@ -12,12 +10,9 @@ import { useAuth } from '../context/AuthContext';
 import tw from 'twin.macro';
 
 const ProfileContainer = tw.div`container mx-auto bg-white shadow-md rounded-md p-6`;
-// const ProfileContainer = tw.div`container mx-auto lg:w-2/3 py-8 px-4`;
 const DeleteProfileButton = tw.button`flex items-center bg-red-600 hover:bg-red-700 py-1 px-2 text-white font-bold rounded focus:outline-none`;
-// const MainTitle = tw.div.h2`flex items-center justify-between mb-4 text-xl font-semibold text-gray-800`;
 const MainTitle = tw.h2`text-2xl font-semibold mb-4 flex items-center`;
 const SecondaryTitle = tw.h3`text-lg font-semibold mb-2`;
-// const ProfileContainer = tw.div`flex items-center justify-center bg-gray-100 py-12`;
 
 export const ProfileDetails = () => {
   const profileQuery = useProfileQuery();
@@ -25,7 +20,7 @@ export const ProfileDetails = () => {
   const { address, email, phone, role, createdAt, updatedAt } =
     profileQuery?.data || {};
 
-  const { authData, logout } = useAuth();
+  const { logout } = useAuth();
 
   const handleDelete = (e) => {
     e.preventDefault();
@@ -45,7 +40,6 @@ export const ProfileDetails = () => {
         </div>
         <div tw="mb-4">
           <SecondaryTitle>User Information:</SecondaryTitle>
-          {/* <p><strong>User ID:</strong> {_id}</p> */}
           <p>
             <strong>Email:</strong> {email}
           </p>

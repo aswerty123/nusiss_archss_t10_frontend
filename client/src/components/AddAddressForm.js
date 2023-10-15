@@ -6,14 +6,10 @@ import { AiOutlinePlus } from 'react-icons/ai';
 import tw from 'twin.macro';
 
 const FormContainer = tw.div`mx-auto w-1/3 max-w-md mx-auto bg-white p-6 rounded-md shadow-md`; // Set width to one-third of the page on large screens
-// const FormContainer = tw.div`container mx-auto lg:w-1/3 py-8 px-4`; // Set width to one-third of the page on large screens
 const FormGroup = tw.div`grid grid-cols-1 gap-3 mt-4`;
-// const FormGroup = tw.div`mb-4`;
 const LabelStyle = tw.label`block text-sm font-medium text-gray-600`;
-// const LabelStyle = tw.label`block text-sm font-medium text-gray-600 mb-1`;
 const AddAddressButton = tw.button`flex items-center bg-indigo-600 hover:bg-indigo-700 py-1 px-2 text-white font-bold rounded focus:outline-none `;
 const MainTitle = tw.h2`text-2xl font-semibold mb-4`;
-// const MainTitle = tw.div.h2` mb-4 flex items-center justify-between text-lg font-semibold text-gray-800`
 const InputStyle = tw.input`mt-1 p-2 w-full border rounded-md`;
 export const AddAddressForm = () => {
   const [formData, setFormData] = useState({

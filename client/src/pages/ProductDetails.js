@@ -1,19 +1,19 @@
-import React, { useState } from 'react';
-import { FaHeart, FaShoppingCart, FaCheck } from 'react-icons/fa';
+import React, { useEffect, useState } from 'react';
+import { FaHeart, FaShoppingCart } from 'react-icons/fa';
 import {
   AiFillHeart,
   AiOutlineHeart,
-  AiFillEdit,
   AiOutlineMinus,
   AiOutlinePlus,
+  AiFillEdit,
 } from 'react-icons/ai';
 import { BsFillTrashFill } from 'react-icons/bs';
 import { BiArrowFromLeft, BiLogIn } from 'react-icons/bi';
-import { useParams, useNavigate, Navigate } from 'react-router-dom';
-import { useProductIdQuery } from '../queries/product-queries';
-
-/** @jsxImportSource @emotion/react */
-import tw, { styled } from 'twin.macro';
+import { useParams, useNavigate } from 'react-router-dom';
+import {
+  useProductIdQuery,
+  useToggleProductActiveStateMutation,
+} from '../queries/product-queries';
 import { useAuth } from '../context/AuthContext';
 import {
   useAddToCartMutation,
@@ -23,36 +23,82 @@ import {
   useWishlistQuery,
 } from '../queries/shopping-queries';
 
+/** @jsxImportSource @emotion/react */
+import tw from 'twin.macro';
+
 const GreenLongButton = tw.button`hover:bg-green-500 hover:text-white hover:border-green-500 w-full flex items-center justify-center border-2 bg-green-100 text-black border-black rounded-full py-2 px-4 hover:text-white transition duration-300 ease-in-out focus:outline-none `;
 const BlueLongButton = tw.button`hover:bg-blue-500 hover:text-white hover:border-blue-500 w-full flex items-center justify-center border-2 bg-blue-100 text-black border-black rounded-full py-2 px-4 hover:text-white transition duration-300 ease-in-out focus:outline-none `;
 const RedLongButton = tw.button`hover:bg-red-500 hover:text-white hover:border-red-500 w-full flex items-center justify-center border-2 bg-red-100 text-black border-black rounded-full py-2 px-4 hover:text-white transition duration-300 ease-in-out focus:outline-none `;
 
+const HalfPage = tw.div`flex-grow items-center justify-center pr-4 w-1/2 h-auto`;
+
+const AvailabilityTag = tw.div
+  .strong`ml-10 bg-green-100 border-2 border-green-400 text-green-700 rounded p-1 my-auto text-sm`;
+const OutOfStockTag = tw.div
+  .strong`ml-10 bg-red-100 border-2 border-red-400 text-red-700 rounded p-1 my-auto text-sm`;
+const ActiveTag = tw.div
+  .strong`ml-10 bg-blue-100 border-2 border-blue-400 text-blue-700 rounded p-1 my-auto text-sm`;
+const InActiveTag = tw.div
+  .strong`ml-10 bg-yellow-100 border-2 border-yellow-400 text-yellow-700 rounded p-1 my-auto text-sm`;
+
 export const ProductDetails = () => {
   const { authData } = useAuth();
-  const [qty, setQty] = useState(1);
 
   const { id } = useParams();
   const navigate = useNavigate();
+  const [imageFormat, setImageFormat] = useState(true);
+  const [qty, setQty] = useState(1);
 
   const productIdQuery = useProductIdQuery(id);
-
   const wishlistQuery = useWishlistQuery();
   const addToWishlistMutation = useAddToWishlistMutation();
   const deleteFromWishlistMutation = useDeleteFromWishlistMutation();
   const addToCartMutation = useAddToCartMutation();
   const cartQuery = useCartQuery();
+  const toggleProductActiveStateMutation =
+    useToggleProductActiveStateMutation();
 
+  const cartItemInfo = cartQuery?.data?.items.find(
+    (item) => item.product._id === id
+  );
+  console.log(cartItemInfo);
+
+  useEffect(() => {
+    if (cartItemInfo) setQty(cartItemInfo.unit);
+  }, [cartItemInfo]);
+
+  const cartIdArray = Array.isArray(cartQuery?.data?.items)
+    ? cartQuery.data.items.map((obj) => obj.product._id)
+    : [];
   const wishlistIdArray = Array.isArray(wishlistQuery?.data)
     ? wishlistQuery.data.map((obj) => obj._id)
     : [];
 
-  const { _id, name, desc, type, unit, price, available, suplier, banner } =
-    productIdQuery?.data || {};
+  const productData = productIdQuery?.data || {};
+  const {
+    _id,
+    user_id,
+    name,
+    description,
+    category_type,
+    imageData,
+    quantity,
+    price,
+    active,
+  } = productData;
+
+  const handleToggleProductActiveStateMutation = (e) => {
+    e.preventDefault();
+    if (authData?.id === user_id) toggleProductActiveStateMutation.mutate(_id);
+  };
+
+  const handleChangeImageFormat = () => {
+    setImageFormat(!imageFormat);
+  };
 
   const handleAddToWishlist = (e) => {
     e.preventDefault();
     addToWishlistMutation.mutate({ product_id: _id });
-    console.log(cartQuery.data);
   };
 
   const handleRemoveFromWishlist = (e) => {
@@ -64,11 +110,10 @@ export const ProductDetails = () => {
     e.preventDefault();
     addToCartMutation.mutate({ product_id: _id, qty: qty });
     navigate('/search');
-    // setQty(1);
   };
 
   const handleQty = (sign) => {
-    if (sign === '+' && qty < 100) {
+    if (sign === '+' && qty < quantity) {
       setQty(qty + 1);
     }
     if (sign === '-' && qty > 1) {
@@ -78,84 +123,83 @@ export const ProductDetails = () => {
 
   return (
     <>
-      <div className="flex p-4 border">
-        <div className="w-1/2 pr-4">
-          <img src={banner} alt={name} className="w-full h-auto" />
-        </div>
-        <div className="w-1/2 flex flex-col">
-          {/* Title */}
-          <div className="flex">
-            <h2 className="text-xl mt-2 flex items-center">{name}</h2>
-            {available ? (
-              <div class="ml-10 bg-green-100 border-2 border-green-400 text-green-700 rounded p-1 my-auto text-sm">
-                <strong class="font-bold">Available</strong>
+      <div className="flex h-full p-4 border">
+        <HalfPage
+          tw="bg-no-repeat"
+          style={{
+            backgroundImage: `url(${imageData})`,
+            backgroundColor: 'gray',
+            backgroundSize: imageFormat ? 'contain' : 'cover',
+            backgroundPosition: 'center',
+          }}
+          onClick={handleChangeImageFormat}
+        ></HalfPage>
+        <HalfPage
+          style={{
+            height: '85vh',
+            padding: '0 20px', // Optional: Add padding to the content
+            boxSizing: 'border-box', // Optional: Include padding and border in the element's total width and height
+          }}
+        >
+          <div tw="flex items-center">
+            <h1 tw="text-4xl font-bold mb-2">{name}</h1>
+            {quantity > 0 ? (
+              <div tw="flex flex-col gap-y-1">
+                <AvailabilityTag>Available</AvailabilityTag>
               </div>
             ) : (
-              <div class="ml-10 bg-red-100 border-2 border-red-400 text-red-700 rounded p-1 my-auto text-sm">
-                <strong class="font-bold">Out of Stock</strong>
-              </div>
+              <OutOfStockTag>Out of Stock</OutOfStockTag>
             )}
-
+            {authData?.role !== 'seller' || authData?.id !== user_id ? (
+              ''
+            ) : active ? (
+              <ActiveTag onClick={handleToggleProductActiveStateMutation}>
+                Active
+              </ActiveTag>
+            ) : (
+              <InActiveTag onClick={handleToggleProductActiveStateMutation}>
+                InActive
+              </InActiveTag>
+            )}
             <div className="flex-grow" />
-            <div className="space-y-2 mt-4">
+            <div className="space-y-2 mt-4 item-center">
               {authData?.role === 'buyer' ? (
                 wishlistIdArray?.includes(_id) ? (
-                  <>
-                    <AiFillHeart
-                      size={30}
-                      tw="text-red-500 hover:text-red-600"
-                      onClick={handleRemoveFromWishlist}
-                    />
-                  </>
+                  <AiFillHeart
+                    size={30}
+                    tw="text-red-500 hover:text-red-600"
+                    onClick={handleRemoveFromWishlist}
+                  />
                 ) : (
-                  <>
-                    <AiOutlineHeart
-                      size={30}
-                      tw="hover:text-red-600"
-                      onClick={handleAddToWishlist}
-                    />
-                  </>
+                  <AiOutlineHeart
+                    size={30}
+                    tw="hover:text-red-600"
+                    onClick={handleAddToWishlist}
+                  />
                 )
               ) : (
                 ''
               )}
             </div>
           </div>
-          {/* Description */}
-          <p>{desc}</p>
-          {/* Price */}
-          <p>${price}</p>
-
-          {/* Spacer */}
-          <div className="flex-grow" />
-          <div className="flex-grow" />
-          <div className="flex-grow" />
-          <div className="flex-grow" />
-          <div className="flex-grow" />
-          <div className="flex-grow" />
-          <div className="flex-grow" />
-          <div tw="flex items-center space-x-2 ">
+          <div tw="m-5">
+            <p>{description}</p>
+            <p>
+              <strong>Category:</strong> {category_type}
+            </p>
+            <p>
+              <strong>Quantity:</strong> {quantity}
+            </p>
+            <p>
+              <strong>Price:</strong> ${price}
+            </p>
             {authData ? (
               authData.role === 'buyer' ? (
                 <>
-                  <div>Quantity</div>
-                  <div className="flex-grow" />
-                  <button
-                    tw="border rounded-l-lg p-1"
-                    onClick={() => handleQty('-')}
-                  >
-                    <AiOutlineMinus />
-                  </button>
-                  <div className="text-lg px-4 font-semibold">{qty}</div>
-                  <button
-                    tw="border rounded-r-lg p-1"
-                    onClick={() => handleQty('+')}
-                  >
-                    <AiOutlinePlus />
-                  </button>
-                  <div className="flex-grow" />
-                  <div className="flex-grow" />
-                  <div className="flex-grow" />
+                  <p>
+                    <strong>Item In Cart:</strong>{' '}
+                    {cartIdArray?.includes(_id) ? 'Yes' : 'No'}
+                  </p>
                 </>
               ) : (
                 ''
@@ -163,42 +207,78 @@ export const ProductDetails = () => {
             ) : (
               ''
             )}
+
+            <div className="flex items-center space-x-2 mt-40 ">
+              {authData ? (
+                authData.role === 'buyer' ? (
+                  <>
+                    {quantity > 0 ? (
+                      <>
+                        <div tw="mr-10">
+                          <strong>Quantity:</strong>
+                        </div>
+                        <button
+                          tw="border rounded-l-lg p-1"
+                          onClick={() => handleQty('-')}
+                        >
+                          <AiOutlineMinus />
+                        </button>
+                        <div className="text-lg px-4 font-semibold">{qty}</div>
+                        <button
+                          tw="border rounded-r-lg p-1"
+                          onClick={() => handleQty('+')}
+                        >
+                          <AiOutlinePlus />
+                        </button>
+                      </>
+                    ) : (
+                      ''
+                    )}
+                  </>
+                ) : (
+                  ''
+                )
+              ) : (
+                ''
+              )}
+            </div>
           </div>
-          <div className="flex-grow" />
-          {/* Buttons */}
-          <div className="space-y-2 mt-4">
+          {/* <div className="flex-grow" /> */}
+          <div className="space-y-2 mt-10">
             {authData ? (
               authData?.role === 'buyer' ? (
                 <>
-                  <BlueLongButton onClick={handleAddToCart}>
-                    <FaShoppingCart size={20} tw="mr-2" /> Add to Cart
-                  </BlueLongButton>
+                  {quantity > 0 ? (
+                    <BlueLongButton onClick={handleAddToCart}>
+                      <FaShoppingCart tw="mr-2" size={20} /> Add to Cart
+                    </BlueLongButton>
+                  ) : (
+                    ''
+                  )}
 
-                  <GreenLongButton>
-                    <BiArrowFromLeft size={20} tw="mr-2" />
-                    Proceed to Checkout
+                  <GreenLongButton onClick={() => navigate('/cart')}>
+                    <BiArrowFromLeft tw="mr-2" size={20} />
+                    Proceed to Cart
                   </GreenLongButton>
                 </>
               ) : (
                 <>
                   <BlueLongButton>
-                    <AiFillEdit size={20} tw="mr-2" /> Edit Product
+                    <AiFillEdit tw="mr-2" size={20} /> Edit Product
                   </BlueLongButton>
-
                   <RedLongButton>
-                    <BsFillTrashFill size={20} tw="mr-2" />
+                    <BsFillTrashFill tw="mr-2" size={20} />
                     Remove Product
                   </RedLongButton>
                 </>
               )
             ) : (
               <BlueLongButton onClick={() => navigate('/login')}>
-                {/* <Navigate to="/login" replace={true} /> */}
-                <BiLogIn size={20} tw="h-6 w-8 rotate-180 mr-2" /> Login to Buy
+                <BiLogIn tw="h-6 w-8 rotate-180 mr-2" size={20} /> Login to Buy
               </BlueLongButton>
             )}
           </div>
-        </div>
+        </HalfPage>
       </div>
     </>
   );

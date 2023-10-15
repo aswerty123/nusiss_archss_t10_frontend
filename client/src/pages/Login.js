@@ -1,14 +1,11 @@
-import React, { useState, useEffect, useRef } from 'react';
-// import { useDispatch, useSelector } from 'react-redux';
-// import { onSignup, onLogin } from '../store/actions';
-// import { Outlet, Navigate } from 'react-router-dom';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
+import { useLoginMutation, useSignUpMutation } from '../queries/user-queries';
 
 /** @jsxImportSource @emotion/react */
 import tw, { styled } from 'twin.macro';
 
-const LoginFormContainer = tw.div`flex min-h-full flex-wrap flex-col justify-center px-12 py-12 bg-gray-100`;
+const LoginFormContainer = tw.div`flex min-h-full flex-wrap flex-col justify-center px-12 py-12 bg-white`;
 const LoginFormHeader = tw.div`text-center text-2xl font-bold leading-9 tracking-tight mx-10 text-gray-900 bg-white `;
 const LoginFormBody = tw.div`mt-10 mx-auto w-full max-w-sm space-y-6 bg-white`;
 const Input = tw.input`w-full px-4 py-2 border border-gray-300 rounded-md focus:ring focus:ring-indigo-500 focus:border-indigo-500 focus:outline-none`;
@@ -22,6 +19,8 @@ const SwitchLink = styled(Switch)(({ link }) => [
 ]);
 
 export const Login = () => {
+  const loginMutation = useLoginMutation();
+  const signUpMutation = useSignUpMutation();
   const [formData, setFormData] = useState({
     email: '',
     role: '',
@@ -29,7 +28,6 @@ export const Login = () => {
     phone: '',
   });
   const [isSignup, setSignup] = useState(false);
-  const { authData, login, signup } = useAuth();
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -45,29 +43,25 @@ export const Login = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log('=====>' + formData);
     if (isSignup) {
-      signup({
+      signUpMutation.mutate({
         email: formData.email,
         password: formData.password,
         phone: formData.phone,
         role: formData.role,
       });
     } else {
-      login({
+      loginMutation.mutate({
         email: formData.email,
         password: formData.password,
       });
     }
-    // window.location.reload();
-    // navigate('/login');
+
     navigate('/home');
   };
 
   return (
     <div>
-      <div>{JSON.stringify(formData)}</div>
-      <div>{JSON.stringify(authData)}</div>
       <LoginFormContainer>
         {isSignup ? (
           <LoginFormHeader>Sign Up with Us</LoginFormHeader>
