@@ -1,6 +1,7 @@
 import api from 'axios';
 
-api.defaults.baseURL = 'http://localhost:90/';
+// api.defaults.baseURL = 'http://localhost:90/';
+api.defaults.baseURL = 'http://nusiss-t10.ap-southeast-2.elasticbeanstalk.com/';
 
 const setHeader = () => {
   const authDataString = localStorage.getItem('authData');
