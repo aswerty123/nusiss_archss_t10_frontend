@@ -132,7 +132,7 @@ export const AddProductForm = () => {
               accept="image/*"
               name="imageData"
               onChange={handleImageChange}
-              required
+              // required
             />
           </ImageUploadContainer>
         </FormGroup>
