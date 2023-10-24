@@ -1,4 +1,5 @@
 import React from 'react';
+import  CartCardList  from '../components/CartCardList';
 import {
   useCartQuery,
   useCreateOrderMutation,
@@ -9,17 +10,19 @@ import { useNavigate } from 'react-router-dom';
 /** @jsxImportSource @emotion/react */
 import tw from 'twin.macro';
 
-const ApiTestContainer = tw.div`container mx-auto p-8`;
-const ApiTestHeader = tw.div`text-3xl font-bold mb-6`;
-const ApiTestContentContainer = tw.div`flex`;
 const ApiTestButtonContainer = tw.div`flex flex-col`;
-const BlueButton = tw.div`bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 mt-4 rounded`;
-const RedButton = tw.div`bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 mt-4 rounded`;
+const BlueButton = tw.div`cursor-pointer bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 mt-4 rounded`;
+const RedButton = tw.div`cursor-pointer bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 mt-4 rounded`;
+
+//Rendering of each product in the cart
+const DisplayContainer =  tw.div`container mx-auto p-4`;
 
 export const CartDetails = () => {
   const navigate = useNavigate();
 
   const cartQuery = useCartQuery();
+  const productDetails = cartQuery?.data;
+  console.log(productDetails)
   const deleteFromCartMutation = useDeleteFromCartMutation();
   const createOrderMutation = useCreateOrderMutation();
 
@@ -34,32 +37,17 @@ export const CartDetails = () => {
   };
 
   return (
-    <ApiTestContainer>
-      <ApiTestHeader>Get Cart Details</ApiTestHeader>
-      <ApiTestContentContainer>
-        {cartQuery && (
-          <div tw="max-w-md bg-white rounded-lg overflow-hidden shadow-lg p-6 mt-4">
-            <h2 tw="text-xl font-semibold mb-4">Get Cart API Data:</h2>
-            <pre tw="whitespace-pre-wrap">
-              {JSON.stringify(cartQuery.data, null, 2)}
-            </pre>
-          </div>
-        )}
-        <ApiTestButtonContainer>
+    <DisplayContainer>
+      {productDetails && productDetails.items.map((item) => (
+        <CartCardList
+          item={item}
+        />
+      ))}
+      <ApiTestButtonContainer>
           <BlueButton onClick={handleCreateOrder}>
-            Checkout (Post Order Api)
+            Checkout
           </BlueButton>
-          {cartQuery &&
-            cartQuery.data?.items?.map((item) => (
-              <RedButton
-                key={item._id}
-                onClick={() => handleRemoveFromCart(item.product._id)}
-              >
-                Delete {item.product.name}
-              </RedButton>
-            ))}
         </ApiTestButtonContainer>
-      </ApiTestContentContainer>
-    </ApiTestContainer>
+    </DisplayContainer>
   );
 };
