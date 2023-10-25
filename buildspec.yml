@@ -3,11 +3,12 @@ phases:
   install:
     commands:
       - echo "the installation phase begins"
-  pre_build:
-    commands:
-      - echo "the prebuild phase begins"
       - cd client
       - npm install
+  pre_build:
+    commands:
+      - echo "the prebuild phase begins (Running Test...)"
+      - npm test
   build:
     commands:
       - echo "the build phase begins"
