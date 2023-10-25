@@ -18,7 +18,7 @@ export const Landing = () => {
   };
   return (
     <>
-      <div style={containerStyle}>
+      <div data-testid="landing-container" style={containerStyle}>
         <Heading>This is LandingPage</Heading>
       </div>
     </>
