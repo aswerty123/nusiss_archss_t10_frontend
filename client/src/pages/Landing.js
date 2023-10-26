@@ -8,8 +8,8 @@ const Heading = tw.h1`text-blue-500 text-2xl p-2`;
 
 export const Landing = () => {
   const containerStyle = {
-    backgroundColor: '#FFC0CB', // Set the background color to red
-    // backgroundColor: '#FFFFFF', // Set the background color to red
+    // backgroundColor: '#FFC0CB', // Set the background color to red
+    backgroundColor: '#FFFFFF', // Set the background color to white
     height: '90vh', // Set the height to 100% of the viewport height
     width: '100vw', // Set the width to 100% of the viewport width
     display: 'flex',
