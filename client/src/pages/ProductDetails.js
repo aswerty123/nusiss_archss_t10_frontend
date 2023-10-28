@@ -23,6 +23,8 @@ import {
   useWishlistQuery,
 } from '../queries/shopping-queries';
 
+import { useDeleteProductMutation } from '../queries/product-queries';
+
 /** @jsxImportSource @emotion/react */
 import tw from 'twin.macro';
 
@@ -42,6 +44,7 @@ const InActiveTag = tw.div
   .strong`ml-10 bg-yellow-100 border-2 border-yellow-400 text-yellow-700 rounded p-1 my-auto text-sm`;
 
 export const ProductDetails = () => {
+  
   const { authData } = useAuth();
 
   const { id } = useParams();
@@ -53,6 +56,7 @@ export const ProductDetails = () => {
   const wishlistQuery = useWishlistQuery();
   const addToWishlistMutation = useAddToWishlistMutation();
   const deleteFromWishlistMutation = useDeleteFromWishlistMutation();
+  const deleteProductMutation = useDeleteProductMutation();
   const addToCartMutation = useAddToCartMutation();
   const cartQuery = useCartQuery();
   const toggleProductActiveStateMutation =
@@ -61,7 +65,8 @@ export const ProductDetails = () => {
   const cartItemInfo = cartQuery?.data?.items.find(
     (item) => item.product._id === id
   );
-  console.log(cartItemInfo);
+  // console.log(cartItemInfo);ß
+  // console.log(productIdQuery?.data)
 
   useEffect(() => {
     if (cartItemInfo) setQty(cartItemInfo.unit);
@@ -111,6 +116,12 @@ export const ProductDetails = () => {
     addToCartMutation.mutate({ product_id: _id, qty: qty });
     navigate('/search');
   };
+
+  const handleProductDelete = (e) => {
+    e.preventDefault();
+    deleteProductMutation.mutate(productData._id);
+    navigate('/search');
+  }
 
   const handleQty = (sign) => {
     if (sign === '+' && qty < quantity) {
@@ -266,8 +277,8 @@ export const ProductDetails = () => {
                   <BlueLongButton>
                     <AiFillEdit tw="mr-2" size={20} /> Edit Product
                   </BlueLongButton>
-                  <RedLongButton>
-                    <BsFillTrashFill tw="mr-2" size={20} />
+                  <RedLongButton onClick={handleProductDelete}>
+                    <BsFillTrashFill tw="mr-2" size={20}  />
                     Remove Product
                   </RedLongButton>
                 </>
